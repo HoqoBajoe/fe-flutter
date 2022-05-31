@@ -14,7 +14,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     Timer(
       const Duration(seconds: 3),
-      () => Navigator.pushNamed(context, '/sign_in'),
+      () => Navigator.pushNamed(context, '/start'),
     );
     super.initState();
   }
@@ -25,8 +25,10 @@ class _SplashPageState extends State<SplashPage> {
         body: Center(
       child: Container(
         decoration: const BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage('assets/images/logo_hoqo_new.png'))),
+          image: DecorationImage(
+            image: AssetImage('assets/images/logo_hoqo_new.png'),
+          ),
+        ),
       ),
     ));
   }
