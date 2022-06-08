@@ -1,10 +1,36 @@
 import 'dart:ui';
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/model/paket.dart';
+import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
+// Future<List<dynamic>> fetchPaket() async {
+//   final response =
+//       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+//   if (response.statusCode == 200) {
+//     return jsonDecode(response.body)["data"];
+//   } else {
+//     // If the server did not return a 200 OK response,
+//     // then throw an exception.
+//     throw Exception('Failed to load album');
+//   }
+// }
+
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Future<List<Paket>> fetchPaket() async {
+    var response = await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+    return (json.decode(response.body)['data'] as List)
+        .map((e) => Paket.fromJson(e))
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,15 +112,26 @@ class HomePage extends StatelessWidget {
 
           //popular list
           Container(
-            margin: const EdgeInsets.only(left: 30),
-            height: 300,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, index) => buildCard(),
-              separatorBuilder: (content, _) => SizedBox(width: 12),
-            ),
-          ),
+              margin: const EdgeInsets.only(left: 30),
+              height: 300,
+              child: FutureBuilder(
+                  future: fetchPaket(),
+                  builder: (context, snapshot) {
+                    List<Paket> paket = snapshot.data as List<Paket>;
+                    if (snapshot.hasData) {
+                      return ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: paket.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            buildCard(paket[index].photo_wisata[1],
+                                paket[index].destinasi_wisata[1]),
+                        separatorBuilder: (content, _) => SizedBox(width: 12),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return CircularProgressIndicator();
+                  })),
 
           //Text widget
           Container(
@@ -117,33 +154,41 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.only(left: 30),
-            height: 300,
-            child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              itemCount: 5,
-              itemBuilder: (context, index) => buildListRecs(),
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-            ),
-          ),
-        ],
-      )
+
+      //list recommended
+
+      Container(
+          margin: const EdgeInsets.only(left: 30),
+          height: 300,
+          child: FutureBuilder(
+              future: fetchPaket(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  List<Paket> paket = snapshot.data as List<Paket>;
+                  return ListView.separated(
+                    itemCount: paket.length,
+                    itemBuilder: (BuildContext context, int index) =>
+                        buildListRecs(paket[index].photo_wisata[1],
+                                paket[index].destinasi_wisata[1]),
+                    separatorBuilder: (content, _) => SizedBox(height: 12),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return CircularProgressIndicator();
+              })),
     ]);
   }
 
-  Widget buildCard() => Stack(
+  Widget buildCard(String imagePhoto, String placeName) => Stack(
         children: [
-          Container(
+          SizedBox(
             height: 300,
             width: 200,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                "https://raw.githubusercontent.com/HoqoBajoe/fe/master/src/Images/card.jpg",
+                imagePhoto,
                 fit: BoxFit.cover,
               ),
             ),
@@ -159,7 +204,7 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.all(6),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Labuan Bajo, Indonesia",
+                    placeName,
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w400,
                         color: Colors.white,
@@ -172,20 +217,25 @@ class HomePage extends StatelessWidget {
         ],
       );
 
-  Widget buildListRecs() => Row(
+  Widget buildListRecs(
+    String imagePhoto,placeName,
+   
+    
+  ) =>
+      Row(
         children: [
-          Container(
+          SizedBox(
             height: 75,
             width: 75,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                "https://raw.githubusercontent.com/HoqoBajoe/fe/master/src/Images/card.jpg",
+                imagePhoto,
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 10,
           ),
           Container(
@@ -195,13 +245,13 @@ class HomePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Labuan Bajo",
+                  placeName,
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 18),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Text(
                   "Indonesia",
                   style: GoogleFonts.poppins(
@@ -211,7 +261,7 @@ class HomePage extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Icon(Icons.star_rounded),
+                    const Icon(Icons.star_rounded),
                     Text(
                       "4.9",
                       style: GoogleFonts.poppins(
