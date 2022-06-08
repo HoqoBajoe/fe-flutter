@@ -19,7 +19,6 @@ class _StartPageState extends State<StartPage> {
 
   final screen = const [
     HomePage(),
-    SearchPage(),
     HistoryPage(),
     AboutUsPage(),
     SignInPage(),
@@ -62,47 +61,4 @@ class _StartPageState extends State<StartPage> {
       ),
     );
   }
-
-  // return Container(
-  //   color: Colors.white60,
-  //   child: ClipRRect(
-  //       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-  //       child: BottomAppBar(
-  //         shape: const CircularNotchedRectangle(),
-  //         notchMargin: 10,
-  //         clipBehavior: Clip.antiAlias,
-  //         child: BottomNavigationBar(
-  //             backgroundColor: backgroundColor4,
-  //             items: <BottomNavigationBarItem>[
-  //               BottomNavigationBarItem(
-  //                   icon: Icon(
-  //                     Icons.home,
-  //                     color: backgroundColor4,
-  //                     size: 21,
-  //                   ),
-  //                   label: ""),
-  //               BottomNavigationBarItem(
-  //                   icon: Icon(
-  //                     Icons.chat,
-  //                     color: backgroundColor4,
-  //                     size: 21,
-  //                   ),
-  //                   label: ""),
-  //               BottomNavigationBarItem(
-  //                   icon: Icon(
-  //                     Icons.question_mark,
-  //                     color: backgroundColor4,
-  //                     size: 21,
-  //                   ),
-  //                   label: ""),
-  //               BottomNavigationBarItem(
-  //                   icon: Icon(
-  //                     Icons.account_circle,
-  //                     color: backgroundColor4,
-  //                     size: 21,
-  //                   ),
-  //                   label: ""),
-  //             ]),
-  //       )),
-  // );
 }
