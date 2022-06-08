@@ -4,6 +4,7 @@ import 'package:hoqobajoe/pages/history_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
 import 'package:hoqobajoe/pages/my_profile.dart';
 import 'package:hoqobajoe/pages/search_page.dart';
+import 'package:hoqobajoe/pages/sign_in_page.dart';
 import 'package:hoqobajoe/theme.dart';
 
 class StartPage extends StatefulWidget {
@@ -21,8 +22,9 @@ class _StartPageState extends State<StartPage> {
     SearchPage(),
     HistoryPage(),
     AboutUsPage(),
-    MyProfilePage(),
+    SignInPage(),
   ];
+
   @override
   Widget build(BuildContext context) {
     void _onTap(int index) {
@@ -31,6 +33,7 @@ class _StartPageState extends State<StartPage> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: screen[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

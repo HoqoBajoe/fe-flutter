@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/theme.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -8,53 +9,60 @@ class SignInPage extends StatelessWidget {
     Widget header() {
       return Container(
         margin: const EdgeInsets.only(top: 30),
-        child: Center(
-          child: Column(
-            children: const [
-              Text('Sign in'),
-              SizedBox(
-                height: 15,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Center(
+              child: Image(
+                image: AssetImage("assets/images/login_vector.png"),
+                width: 200,
               ),
-              Text(
-                'Liburan seru menantimu bersama HoqoBajoe',
-              )
-            ],
-          ),
+            ),
+            Text(
+              'Masuk',
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 32,
+                letterSpacing: 2.5,
+              ),
+            ),
+          ],
         ),
       );
     }
 
     Widget emailField() {
       return Container(
-        margin: const EdgeInsets.only(top: 70),
+        margin: const EdgeInsets.only(top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Email Address',
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             Container(
                 height: 50,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue[200],
+                  border: Border.all(
+                    width: 2,
+                    color: primaryColor,
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.mail),
+                    Icon(
+                      Icons.mail,
+                      color: primaryColor,
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: TextFormField(
-                        decoration: const InputDecoration.collapsed(
+                        decoration: InputDecoration.collapsed(
                           hintText: 'Alamat Email',
+                          hintStyle: hintTextStyle,
                         ),
                       ),
                     ),
@@ -71,32 +79,33 @@ class SignInPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Password',
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             Container(
                 height: 50,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue[200],
+                  border: Border.all(
+                    width: 2,
+                    color: primaryColor,
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.lock),
+                    Icon(
+                      Icons.lock,
+                      color: primaryColor,
+                    ),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                       child: TextFormField(
                         obscureText: true,
-                        decoration: const InputDecoration.collapsed(
+                        decoration: InputDecoration.collapsed(
                           hintText: 'Password',
+                          hintStyle: hintTextStyle,
                         ),
                       ),
                     ),
@@ -117,12 +126,17 @@ class SignInPage extends StatelessWidget {
             Navigator.pushNamed(context, '/homepage');
           },
           style: TextButton.styleFrom(
-            backgroundColor: Colors.blue[300],
+            backgroundColor: secondaryColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          child: const Text('Sign In'),
+          child: Text(
+            'Masuk',
+            style: primaryTextStyle.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       );
     }
@@ -135,14 +149,17 @@ class SignInPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Belum punya akun? '),
+            Text(
+              'Belum punya akun? ',
+              style: blackTextStyle,
+            ),
             GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, '/sign_up');
                 },
-                child: const Text(
+                child: Text(
                   'Daftar',
-                  style: TextStyle(
+                  style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 )),
@@ -152,6 +169,7 @@ class SignInPage extends StatelessWidget {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
           child: Container(
         margin: const EdgeInsets.symmetric(
