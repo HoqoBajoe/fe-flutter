@@ -47,10 +47,6 @@ class _StartPageState extends State<StartPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.history),
             label: 'History',
           ),
