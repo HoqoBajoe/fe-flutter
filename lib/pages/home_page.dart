@@ -5,17 +5,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<dynamic>> fetchPaket() async {
-  final response =
-      await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body)["data"];
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load album');
-  }
-}
+// Future<List<dynamic>> fetchPaket() async {
+//   final response =
+//       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+//   if (response.statusCode == 200) {
+//     return jsonDecode(response.body)["data"];
+//   } else {
+//     // If the server did not return a 200 OK response,
+//     // then throw an exception.
+//     throw Exception('Failed to load album');
+//   }
+// }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,12 +25,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<dynamic>> _paket;
-
-  @override
-  void initState() {
-    _paket = fetchPaket();
-    super.initState();
+  Future<List<Paket>> fetchPaket() async {
+    var response = await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+    return (json.decode(response.body)['data'] as List)
+        .map((e) => Paket.fromJson(e))
+        .toList();
   }
 
   @override
@@ -116,15 +115,16 @@ class _HomePageState extends State<HomePage> {
               margin: const EdgeInsets.only(left: 30),
               height: 300,
               child: FutureBuilder(
-                  future: _paket,
-                  builder: (context, AsyncSnapshot snapshot) {
+                  future: fetchPaket(),
+                  builder: (context, snapshot) {
+                    List<Paket> paket = snapshot.data as List<Paket>;
                     if (snapshot.hasData) {
                       return ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemCount: snapshot.data.length,
+                        itemCount: paket.length,
                         itemBuilder: (BuildContext context, int index) =>
-                            buildCard(snapshot.data[index]["photo_wisata"][1],
-                                snapshot.data[index]["destinasi_wisata"][1]),
+                            buildCard(paket[index].photo_wisata[1],
+                                paket[index].destinasi_wisata[1]),
                         separatorBuilder: (content, _) => SizedBox(width: 12),
                       );
                     } else if (snapshot.hasError) {
@@ -161,14 +161,15 @@ class _HomePageState extends State<HomePage> {
           margin: const EdgeInsets.only(left: 30),
           height: 300,
           child: FutureBuilder(
-              future: _paket,
+              future: fetchPaket(),
               builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData) {
+                  List<Paket> paket = snapshot.data as List<Paket>;
                   return ListView.separated(
-                    itemCount: snapshot.data.length,
+                    itemCount: paket.length,
                     itemBuilder: (BuildContext context, int index) =>
-                        buildListRecs(snapshot.data[index]["photo_wisata"][1],
-                            snapshot.data[index]["destinasi_wisata"][1]),
+                        buildListRecs(paket[index].photo_wisata[1],
+                                paket[index].destinasi_wisata[1]),
                     separatorBuilder: (content, _) => SizedBox(height: 12),
                   );
                 } else if (snapshot.hasError) {
