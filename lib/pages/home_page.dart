@@ -16,6 +16,13 @@ import 'package:http/http.dart' as http;
 //     throw Exception('Failed to load album');
 //   }
 // }
+Future<List<Paket>> fetchPaket() async {
+  var response =
+      await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+  return (json.decode(response.body)['data'] as List)
+      .map((e) => Paket.fromJson(e))
+      .toList();
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -25,13 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<Paket>> fetchPaket() async {
-    var response =
-        await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
-    return (json.decode(response.body)['data'] as List)
-        .map((e) => Paket.fromJson(e))
-        .toList();
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -118,8 +119,8 @@ class _HomePageState extends State<HomePage> {
               child: FutureBuilder(
                   future: fetchPaket(),
                   builder: (context, snapshot) {
-                    List<Paket> paket = snapshot.data as List<Paket>;
                     if (snapshot.hasData) {
+                      List<Paket> paket = snapshot.data as List<Paket>;
                       return ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: paket.length,
@@ -130,12 +131,12 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: buildCard(paket[index].photo_wisata[1],
                                     paket[index].destinasi_wisata[1])),
-                        separatorBuilder: (content, _) => SizedBox(width: 12),
+                        separatorBuilder: (content, _) => const SizedBox(width: 12),
                       );
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
-                    return CircularProgressIndicator();
+                    return const Center(child: SizedBox(height:30,width: 30, child: CircularProgressIndicator()));
                   })),
 
           //Text widget
@@ -175,12 +176,12 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (BuildContext context, int index) =>
                         buildListRecs(paket[index].photo_wisata[1],
                             paket[index].destinasi_wisata[1]),
-                    separatorBuilder: (content, _) => SizedBox(height: 12),
+                    separatorBuilder: (content, _) => const SizedBox(height: 12),
                   );
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
-                return CircularProgressIndicator();
+                return Center(child: SizedBox(height:30,width: 30, child: CircularProgressIndicator()));
               })),
     ]);
   }
