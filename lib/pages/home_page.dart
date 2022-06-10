@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (BuildContext context, int index) =>
                             InkWell(
                                 onTap: () {
-                                  Navigator.pushNamed(context, "/detail_page");
+                                  Navigator.pushNamed(context, "/detail_page",arguments: paket[index]);
                                 },
                                 child: buildCard(paket[index].photo_wisata[1],
                                     paket[index].destinasi_wisata[1])),
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                     itemBuilder: (BuildContext context, int index) =>
                         InkWell(
                                 onTap: () {
-                                  Navigator.pushNamed(context, "/detail_page");
+                                  Navigator.pushNamed(context, "/detail_page",arguments: paket[index]);
                                 },
                                 child: buildListRecs(paket[index].photo_wisata[1],
                             paket[index].nama_paket,paket[index].destinasi_wisata),
