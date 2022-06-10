@@ -103,11 +103,6 @@ class _HomePageState extends State<HomePage> {
                   style: GoogleFonts.poppins(
                       fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  "View All",
-                  style: GoogleFonts.poppins(
-                      fontSize: 16, fontWeight: FontWeight.normal),
-                ),
               ],
             ),
           ),
@@ -174,8 +169,13 @@ class _HomePageState extends State<HomePage> {
                   return ListView.separated(
                     itemCount: paket.length,
                     itemBuilder: (BuildContext context, int index) =>
-                        buildListRecs(paket[index].photo_wisata[1],
-                            paket[index].destinasi_wisata[1]),
+                        InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/detail_page");
+                                },
+                                child: buildListRecs(paket[index].photo_wisata[1],
+                            paket[index].nama_paket,paket[index].destinasi_wisata),
+                        ),
                     separatorBuilder: (content, _) => const SizedBox(height: 12),
                   );
                 } else if (snapshot.hasError) {
@@ -225,7 +225,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildListRecs(
     String imagePhoto,
-    placeName,
+    paketName,
+    List<String> list
   ) =>
       Row(
         children: [
@@ -250,7 +251,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  placeName,
+                  paketName,
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -258,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(width: 16),
                 Text(
-                  "Indonesia",
+                  "${list[0]},${list[1]},...",
                   style: GoogleFonts.poppins(
                       fontWeight: FontWeight.normal,
                       color: Colors.black,
