@@ -1,55 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class DetailPage extends StatefulWidget {
+  const DetailPage({Key? key}) : super(key: key);
+
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
+  
   int activeIndex = 0;
-
-  final urlImages = [
-    "https://raw.githubusercontent.com/HoqoBajoe/fe/master/src/Images/background.jpg",
-    "https://i0.wp.com/labuanbajotour.com/wp-content/uploads/2019/08/Sawah-Lingko-Labuan-Bajo-sumber-ig-funadventure_.jpg?fit=750%2C500&ssl=1",
-    "https://i0.wp.com/labuanbajotour.com/wp-content/uploads/2019/08/Sawah-Lingko-Labuan-Bajo-sumber-ig-funadventure_.jpg?fit=750%2C500&ssl=1"
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
+    
+    Paket paket= ModalRoute.of(context)!.settings.arguments as Paket;
+    
+    List<String> urlImages = paket.photo_wisata;
+
     TabController _tabController = TabController(length: 2, vsync: this);
-
+    
     return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: appBar(),
-        body: 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Slider
-              pictSlide(),
-              const SizedBox(height: 6),
+      extendBodyBehindAppBar: true,
+      appBar: appBar(),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //Slider
+          pictSlide(urlImages),
+          const SizedBox(height: 6),
 
-              //indicator dot
-              Center(child: buildIndicator()),
+          //indicator dot
+          Center(child: buildIndicator(urlImages)),
 
-              //Text
-              titleAndPrice(),
+          //Text
+          titleAndPrice(paket.nama_paket,paket.harga),
 
-              const SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-              //widget TabBar
-              tabBar(_tabController),
-              tabBarView(_tabController),
+          //widget TabBar
+          tabBar(_tabController),
+          tabBarView(_tabController,paket.deskripsi,paket.destinasi_wisata),
 
-              //button
-              buttonPay(),
-            ],
-          ),
-        );
+          //button
+          buttonPay(),
+        ],
+      ),
+    );
   }
 
   AppBar appBar() {
@@ -69,24 +73,22 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               Icons.arrow_back_rounded,
               color: Colors.black,
             ),
-            onPressed: () => {
-              Navigator.pushNamed(context, "/start")
-            },
+            onPressed: () => {Navigator.pushNamed(context, "/start")},
           ),
         ));
   }
 
-  Padding titleAndPrice() {
+  Padding titleAndPrice(String title, int price) {
     return Padding(
-      padding: const EdgeInsets.only(left: 30,top: 10),
+      padding: const EdgeInsets.only(left: 30, top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Labuan Bajo",
+          Text(title,
               style: GoogleFonts.poppins(
                   fontSize: 22, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          Text("Harga : IDR 20.000")
+          Text("Harga : IDR $price")
         ],
       ),
     );
@@ -120,15 +122,28 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
   }
 
-  Container tabBarView(TabController _tabController) {
+  Container tabBarView(TabController _tabController,String paket,List<String> destinasi) {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: defaultMargin),
         padding: const EdgeInsets.all(10),
-        width: double.maxFinite,
-        height: 250,
+        height: 150,
         child: TabBarView(controller: _tabController, children: [
-          Flexible(child: Text("Destinasi wisata seperti ini bisa ditemukan di Pulau Kelor di Flores yang merupakan pulau kecil dengan pasir putih dan tanaman hijau di tengahnya, serta riak-riak kecil ombak yang tenang di perairan sekitarnya.Objek wisata Labuan Bajo ini wajib dikunjungi bagi yang menyukai warna pink. Jika dilihat dari sudut manapun, lokasinya asyik, sejuk, dan sangat pink!Sekedar berenang, berjemur atau snorkeling, apapun yang Anda pilih, apa yang Anda lihat dan rasakan akan memberikan kepuasan batin karena Anda telah menyaksikan kemegahan ciptaan Tuhan. Keren! Flores adalah rumah bagi sejumlah besar tempat wisata menakjubkan yang layak dikunjungi.")),
-          Text("Review") //buat list review
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(paket),
+                SizedBox(height: 10),
+                Text("Daftar Destinasi :"),
+                Text("  • ${destinasi[0]} "),
+                Text("  • ${destinasi[1]}"),
+                Text("  • ${destinasi[2]}"),
+              ],
+            ),
+          ),
+
+          //buat list review
+          _buildListView()
         ]));
   }
 
@@ -146,7 +161,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ));
   }
 
-  CarouselSlider pictSlide() {
+  CarouselSlider pictSlide(List<String> urlImages) {
     return CarouselSlider.builder(
         itemCount: urlImages.length,
         itemBuilder: (context, index, realIndex) {
@@ -177,7 +192,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ),
       );
 
-  Widget buildIndicator() => AnimatedSmoothIndicator(
+  Widget buildIndicator(List<String> urlImages) => AnimatedSmoothIndicator(
         activeIndex: activeIndex,
         count: urlImages.length,
         effect: const ScrollingDotsEffect(
@@ -185,4 +200,19 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           dotWidth: 8,
         ),
       );
+
+  ListView _buildListView() {
+    return ListView.builder(
+            itemCount: 2,
+            itemBuilder: (_, index) {
+              return const Card(
+                  color: Colors.white,
+                  child: ListTile(
+                    leading: CircleAvatar(),
+                    title: Text("Nama Orang"),
+                    subtitle: Text(
+                        "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
+                  ));
+            });
+  }
 }
