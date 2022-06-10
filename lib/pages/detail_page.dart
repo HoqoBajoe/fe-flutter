@@ -70,7 +70,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               color: Colors.black,
             ),
             onPressed: () => {
-              Navigator.pushNamed(context, "/homepage")
+              Navigator.pushNamed(context, "/start")
             },
           ),
         ));
