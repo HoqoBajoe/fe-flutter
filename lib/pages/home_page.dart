@@ -26,7 +26,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<Paket>> fetchPaket() async {
-    var response = await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
+    var response =
+        await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
     return (json.decode(response.body)['data'] as List)
         .map((e) => Paket.fromJson(e))
         .toList();
@@ -123,8 +124,12 @@ class _HomePageState extends State<HomePage> {
                         scrollDirection: Axis.horizontal,
                         itemCount: paket.length,
                         itemBuilder: (BuildContext context, int index) =>
-                            buildCard(paket[index].photo_wisata[1],
-                                paket[index].destinasi_wisata[1]),
+                            InkWell(
+                                onTap: () {
+                                  Navigator.pushNamed(context, "/detail_page");
+                                },
+                                child: buildCard(paket[index].photo_wisata[1],
+                                    paket[index].destinasi_wisata[1])),
                         separatorBuilder: (content, _) => SizedBox(width: 12),
                       );
                     } else if (snapshot.hasError) {
@@ -169,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: paket.length,
                     itemBuilder: (BuildContext context, int index) =>
                         buildListRecs(paket[index].photo_wisata[1],
-                                paket[index].destinasi_wisata[1]),
+                            paket[index].destinasi_wisata[1]),
                     separatorBuilder: (content, _) => SizedBox(height: 12),
                   );
                 } else if (snapshot.hasError) {
@@ -218,9 +223,8 @@ class _HomePageState extends State<HomePage> {
       );
 
   Widget buildListRecs(
-    String imagePhoto,placeName,
-   
-    
+    String imagePhoto,
+    placeName,
   ) =>
       Row(
         children: [
