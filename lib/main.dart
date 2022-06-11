@@ -8,6 +8,7 @@ import 'package:hoqobajoe/pages/sign_in_page.dart';
 import 'package:hoqobajoe/pages/sign_up_page.dart';
 import 'package:hoqobajoe/pages/splash_page.dart';
 import 'package:hoqobajoe/pages/start_page.dart';
+import 'pages/edit_profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
         '/sign_in': (context) => const SignInPage(),
         '/sign_up': (context) => const SignUpPage(),
         '/homepage': (context) => const HomePage(),
-        '/detail_page': (context) =>  DetailPage(),
-        '/search': (context) => const SearchPage()
+        '/detail_page': (context) => DetailPage(),
+        '/search': (context) => const SearchPage(),
+        '/edit_profile_page': (context) => const EditProfilePage()
       },
     );
   }
