@@ -24,6 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               nameField(),
               emailField(),
               editButton(),
+              showRole(),
             ],
           ),
         ),
@@ -154,6 +155,51 @@ Widget editButton() {
         ),
       ),
       onPressed: () {},
+    ),
+  );
+}
+
+Widget showRole() {
+  return Container(
+    margin: const EdgeInsets.only(top: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 2,
+              color: primaryColor,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.verified_user_outlined,
+                color: primaryColor,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Text(
+                  'USER',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black.withOpacity(0.5),
+                    fontWeight: bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
     ),
   );
 }
