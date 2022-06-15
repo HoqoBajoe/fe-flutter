@@ -1,11 +1,51 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/model/user.dart';
+import 'package:hoqobajoe/network/api.dart';
 import 'package:hoqobajoe/theme.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
   @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final storage = new FlutterSecureStorage();
+
   Widget build(BuildContext context) {
+    var txtEditEmail = TextEditingController();
+    var txtEditPass = TextEditingController();
+
+    Future<void> doLogin(String email, String password) async {
+      final response = await http.post(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var responseJson = jsonDecode(response.body);
+        print(responseJson['data']['token']);
+        await storage.write(key: "TOKEN", value: responseJson['data']['token']);
+        Navigator.pushNamed(context, '/');
+        return print('success');
+      } else {
+        // throw Exception('Failed to login');
+        return print('error');
+      }
+    }
+
+    // var res = await Network().auth({data},'/login');
+
     Widget header() {
       return Container(
         margin: const EdgeInsets.only(top: 30),
@@ -60,6 +100,7 @@ class SignInPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditEmail,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Alamat Email',
                           hintStyle: hintTextStyle,
@@ -102,6 +143,7 @@ class SignInPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditPass,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Password',
@@ -123,7 +165,8 @@ class SignInPage extends StatelessWidget {
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/homepage');
+            print('di klik');
+            doLogin(txtEditEmail.text, txtEditPass.text);
           },
           style: TextButton.styleFrom(
             backgroundColor: secondaryColor,
