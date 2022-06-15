@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -12,11 +13,22 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
+    _startApp();
     Timer(
       const Duration(seconds: 3),
       () => Navigator.pushNamed(context, '/start'),
     );
     super.initState();
+  }
+
+  Future<void> _startApp() async {
+    final storage = FlutterSecureStorage();
+    var token = await storage.read(key: "TOKEN");
+    if (token == null) {
+      print(token);
+    } else {
+      print('error');
+    }
   }
 
   @override
