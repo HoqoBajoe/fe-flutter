@@ -32,8 +32,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,140 +48,165 @@ class _HomePageState extends State<HomePage> {
       Column(
         children: [
           //Text
-          Container(
-            margin: const EdgeInsets.only(top: 48),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "World of Paradise,",
-                  style: GoogleFonts.poppins(
-                      fontSize: 38, fontWeight: FontWeight.bold, height: 0.5),
-                ),
-                Text(
-                  "Indonesia",
-                  style: GoogleFonts.poppins(
-                      fontSize: 38,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
-                ),
-              ],
-            ),
-          ),
-
+          textHeader(),
           //search
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-            height: 50,
-            width: 340,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(12)),
-            child: const TextField(
-              decoration: InputDecoration(
-                  hintText: "Search Place",
-                  hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
-                  prefixIcon: Icon(Icons.search),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 14)),
-            ),
-          ),
-
+          searchPaket(),
           //Text Widget
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Popular Category",
-                  style: GoogleFonts.poppins(
-                      fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-
+          textPopular(),
           //popular list
-          Container(
-              margin: const EdgeInsets.only(left: 30),
-              height: 300,
-              child: FutureBuilder(
-                  future: fetchPaket(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Paket> paket = snapshot.data as List<Paket>;
-                      return ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: paket.length,
-                        itemBuilder: (BuildContext context, int index) =>
-                            InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/detail_page",arguments: paket[index]);
-                                },
-                                child: buildCard(paket[index].photo_wisata[1],
-                                    paket[index].destinasi_wisata[1])),
-                        separatorBuilder: (content, _) => const SizedBox(width: 12),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return const Center(child: SizedBox(height:30,width: 30, child: CircularProgressIndicator()));
-                  })),
-
+          listPopular(),
           //Text widget
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Recommended",
-                  style: GoogleFonts.poppins(
-                      fontSize: 22, fontWeight: FontWeight.bold),
+          textRecommended(),
+        ],
+      ),
+      //list recommended
+      listRecommended(),
+    ]);
+  }
+
+  Container listRecommended() {
+    return Container(
+        margin: const EdgeInsets.only(left: 30),
+        height: 300,
+        child: FutureBuilder(
+            future: fetchPaket(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                List<Paket> paket = snapshot.data as List<Paket>;
+                return ListView.separated(
+                  itemCount: paket.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/detail_page",
+                          arguments: paket[index]);
+                    },
+                    child: buildListRecs(paket[index].photo_wisata[1],
+                        paket[index].nama_paket, paket[index].destinasi_wisata),
+                  ),
+                  separatorBuilder: (content, _) => const SizedBox(height: 12),
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator(),
                 ),
-                Text(
-                  "View All",
-                  style: GoogleFonts.poppins(
-                      fontSize: 16, fontWeight: FontWeight.normal),
-                ),
-              ],
-            ),
+              );
+            }));
+  }
+
+  Container textRecommended() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Recommended",
+            style:
+                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            "View All",
+            style: GoogleFonts.poppins(
+                fontSize: 16, fontWeight: FontWeight.normal),
           ),
         ],
       ),
+    );
+  }
 
-      //list recommended
+  Container listPopular() {
+    return Container(
+        margin: const EdgeInsets.only(left: 30),
+        height: 300,
+        child: FutureBuilder(
+            future: fetchPaket(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Paket> paket = snapshot.data as List<Paket>;
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: paket.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/detail_page",
+                            arguments: paket[index]);
+                      },
+                      child: buildCard(paket[index].photo_wisata[1],
+                          paket[index].destinasi_wisata[1])),
+                  separatorBuilder: (content, _) => const SizedBox(width: 12),
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                  child: SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator()));
+            }));
+  }
 
-      Container(
-          margin: const EdgeInsets.only(left: 30),
-          height: 300,
-          child: FutureBuilder(
-              future: fetchPaket(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  List<Paket> paket = snapshot.data as List<Paket>;
-                  return ListView.separated(
-                    itemCount: paket.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        InkWell(
-                                onTap: () {
-                                  Navigator.pushNamed(context, "/detail_page",arguments: paket[index]);
-                                },
-                                child: buildListRecs(paket[index].photo_wisata[1],
-                            paket[index].nama_paket,paket[index].destinasi_wisata),
-                        ),
-                    separatorBuilder: (content, _) => const SizedBox(height: 12),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return Center(child: SizedBox(height:30,width: 30, child: CircularProgressIndicator()));
-              })),
-    ]);
+  Container textPopular() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Popular Category",
+            style:
+                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container searchPaket() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      height: 50,
+      width: 340,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+      ),
+      decoration: BoxDecoration(
+          color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
+      child: const TextField(
+        decoration: InputDecoration(
+            hintText: "Search Place",
+            hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
+            prefixIcon: Icon(Icons.search),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(vertical: 14)),
+      ),
+    );
+  }
+
+  Container textHeader() {
+    return Container(
+      margin: const EdgeInsets.only(top: 48),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "World of Paradise,",
+            style: GoogleFonts.poppins(
+                fontSize: 38, fontWeight: FontWeight.bold, height: 0.5),
+          ),
+          Text(
+            "Indonesia",
+            style: GoogleFonts.poppins(
+                fontSize: 38, fontWeight: FontWeight.bold, color: Colors.red),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildCard(String imagePhoto, String placeName) => Stack(
@@ -223,12 +246,7 @@ class _HomePageState extends State<HomePage> {
         ],
       );
 
-  Widget buildListRecs(
-    String imagePhoto,
-    paketName,
-    List<String> list
-  ) =>
-      Row(
+  Widget buildListRecs(String imagePhoto, paketName, List<String> list) => Row(
         children: [
           SizedBox(
             height: 75,

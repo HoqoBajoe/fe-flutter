@@ -36,19 +36,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           //Slider
           pictSlide(urlImages),
           const SizedBox(height: 6),
-
           //indicator dot
           Center(child: buildIndicator(urlImages)),
-
           //Text
           titleAndPrice(paket.nama_paket,paket.harga),
-
           const SizedBox(height: 12),
-
           //widget TabBar
           tabBar(_tabController),
           tabBarView(_tabController,paket.deskripsi,paket.destinasi_wisata),
-
           //button
           buttonPay(),
         ],
