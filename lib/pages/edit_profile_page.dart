@@ -17,7 +17,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: buildAppbar(),
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(top: 10.0, left: 10, right: 10),
+          margin: const EdgeInsets.only(top: 40.0, left: 10, right: 10),
           child: Column(
             children: [
               profilePicture(),
@@ -42,6 +42,12 @@ AppBar buildAppbar() {
         color: Colors.black,
         onPressed: () => {},
       ),
+    ),
+    centerTitle: true,
+    title: Text(
+      'My Profile',
+      style: GoogleFonts.poppins(
+          fontSize: 20, color: Colors.black, fontWeight: bold),
     ),
     backgroundColor: Colors.transparent,
     elevation: 0,
@@ -141,7 +147,7 @@ Widget editButton() {
   return Container(
     height: 50,
     width: double.infinity,
-    margin: const EdgeInsets.only(top: 100),
+    margin: const EdgeInsets.only(top: 190),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         shape: StadiumBorder(),
