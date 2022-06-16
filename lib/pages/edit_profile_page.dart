@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -10,9 +11,16 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  // Future<List<User>> fetchUser() async {
+  //   var response =
+  //       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/users'));
+
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: buildAppbar(),
       body: SafeArea(
@@ -51,6 +59,12 @@ AppBar buildAppbar() {
     ),
     backgroundColor: Colors.transparent,
     elevation: 0,
+    actions: <Widget>[
+      Container(
+        margin: EdgeInsets.all(5),
+        child: logOutButton(),
+      )
+    ],
   );
 }
 
@@ -147,7 +161,7 @@ Widget editButton() {
   return Container(
     height: 50,
     width: double.infinity,
-    margin: const EdgeInsets.only(top: 190),
+    margin: const EdgeInsets.only(top: 220),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         shape: StadiumBorder(),
@@ -157,6 +171,27 @@ Widget editButton() {
         'Edit Profile',
         style: GoogleFonts.poppins(
           fontSize: 15,
+          fontWeight: bold,
+        ),
+      ),
+      onPressed: () {},
+    ),
+  );
+}
+
+Widget logOutButton() {
+  return Container(
+    height: 40,
+    width: 100,
+    margin: const EdgeInsets.only(top: 10),
+    child: ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: alertColor,
+      ),
+      child: Text(
+        'Log Out',
+        style: GoogleFonts.poppins(
+          fontSize: 12,
           fontWeight: bold,
         ),
       ),
