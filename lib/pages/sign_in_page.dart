@@ -205,7 +205,7 @@ class _SignInPageState extends State<SignInPage> {
                   style: blackTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-                )),
+                ),),
           ],
         ),
       );
