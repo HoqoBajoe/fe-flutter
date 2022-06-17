@@ -3,6 +3,7 @@ import 'package:hoqobajoe/theme.dart';
 import 'package:hoqobajoe/model/history_transaction.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 
 class HistoryPage extends StatefulWidget {
@@ -12,8 +13,11 @@ class HistoryPage extends StatefulWidget {
   State<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
+class _HistoryPageState extends State<HistoryPage>
+    with TickerProviderStateMixin {
+  
   final storage = const FlutterSecureStorage();
+  late Future<List<HistTrans>> future;
 
   Future<List<HistTrans>> fetchHistory() async {
     var token = await storage.read(key: "TOKEN");
@@ -28,8 +32,28 @@ class _HistoryPageState extends State<HistoryPage> {
         .toList();
   }
 
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 3, vsync: this);
+    super.initState();
+     _tabController.addListener(() {
+      setState(() {});
+    });
+    future = fetchHistory();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -40,7 +64,8 @@ class _HistoryPageState extends State<HistoryPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 text(),
-                listHistory(),
+                tabBar(_tabController),
+                tabBarView(_tabController),
               ],
             ),
           ),
@@ -51,7 +76,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   Padding text() {
     return Padding(
-      padding: const EdgeInsets.only(left: 5, bottom: 5),
+      padding: const EdgeInsets.all(10),
       child: Text(
         "History Transaction",
         style:
@@ -60,14 +85,15 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  SizedBox listHistory() {
+  SizedBox listHistory(String status) {
     return SizedBox(
       height: 700,
       child: FutureBuilder(
-        future: fetchHistory(),
+        future: future,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             List<HistTrans> history = snapshot.data as List<HistTrans>;
+            history = history.where((a) => a.status == status).toList();
             return ListView.separated(
               itemCount: history.length,
               itemBuilder: (context, index) => transaction(history[index]),
@@ -151,6 +177,72 @@ class _HistoryPageState extends State<HistoryPage> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Container tabBarView(TabController _tabController) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      height: 700,
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          listHistory("Pending"),
+          listHistory("Accepted"),
+          listHistory("Rejected"),
+        ],
+      ),
+    );
+  }
+
+  SizedBox tabBar(TabController _tabController) {
+    return SizedBox(
+      height: 40,
+      child: TabBar(
+        labelColor: Colors.black,
+        labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+        controller: _tabController,
+        indicatorColor: _tabController.index == 0? Colors.black : _tabController.index == 1? Colors.green[600]:Colors.red,
+        tabs: [
+          Tab(
+            child: Row(
+              children: const [
+                Icon(Icons.pending_outlined),
+                Text(" Pending"),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              children: [
+                Icon(Icons.check_circle_outline,color:  _tabController.index== 1
+                  ? Colors.green[600]
+                  : Colors.green[300],),
+                Text(
+                  " Success",
+                  style: TextStyle(color:_tabController.index== 1
+                  ? Colors.green[600]
+                  : Colors.green[300]),
+                )
+              ]
+            ),
+          ),
+          Tab(
+            child: Row(
+              children:[
+                Icon(Icons.sms_failed_outlined,color:  _tabController.index == 2
+                  ? Colors.red
+                  : Colors.red[300],),
+                Text(" Rejected",
+                  style: TextStyle(color: _tabController.index==2
+                  ? Colors.red
+                  : Colors.red[300]),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

@@ -13,19 +13,16 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
-  
   int activeIndex = 0;
-  
 
   @override
   Widget build(BuildContext context) {
-    
-    Paket paket= ModalRoute.of(context)!.settings.arguments as Paket;
-    
+    Paket paket = ModalRoute.of(context)!.settings.arguments as Paket;
+
     List<String> urlImages = paket.photo_wisata;
 
     TabController _tabController = TabController(length: 2, vsync: this);
-    
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: appBar(),
@@ -39,11 +36,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           //indicator dot
           Center(child: buildIndicator(urlImages)),
           //Text
-          titleAndPrice(paket.nama_paket,paket.harga),
+          titleAndPrice(paket.nama_paket, paket.harga),
           const SizedBox(height: 12),
           //widget TabBar
           tabBar(_tabController),
-          tabBarView(_tabController,paket.deskripsi,paket.destinasi_wisata),
+          tabBarView(_tabController, paket.deskripsi, paket.destinasi_wisata),
           //button
           buttonPay(),
         ],
@@ -117,12 +114,15 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
   }
 
-  Container tabBarView(TabController _tabController,String paket,List<String> destinasi) {
+  Container tabBarView(
+      TabController _tabController, String paket, List<String> destinasi) {
     return Container(
-        margin: EdgeInsets.symmetric(horizontal: defaultMargin),
-        padding: const EdgeInsets.all(10),
-        height: 150,
-        child: TabBarView(controller: _tabController, children: [
+      margin: EdgeInsets.symmetric(horizontal: defaultMargin),
+      padding: const EdgeInsets.all(10),
+      height: 150,
+      child: TabBarView(
+        controller: _tabController,
+        children: [
           SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,21 +139,24 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
           //buat list review
           _buildListView()
-        ]));
+        ],
+      ),
+    );
   }
 
   Container tabBar(TabController _tabController) {
     return Container(
-        height: 40,
-        margin: EdgeInsets.symmetric(horizontal: defaultMargin),
-        child: TabBar(
-          labelColor: Colors.black,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-          unselectedLabelColor: Colors.grey,
-          controller: _tabController,
-          indicatorColor: Colors.black,
-          tabs: const [Tab(text: "Overview"), Tab(text: "Review")],
-        ));
+      height: 40,
+      margin: EdgeInsets.symmetric(horizontal: defaultMargin),
+      child: TabBar(
+        labelColor: Colors.black,
+        labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+        unselectedLabelColor: Colors.grey,
+        controller: _tabController,
+        indicatorColor: Colors.black,
+        tabs: const [Tab(text: "Overview"), Tab(text: "Review")],
+      ),
+    );
   }
 
   CarouselSlider pictSlide(List<String> urlImages) {
@@ -177,7 +180,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   colors: [Colors.black, Colors.transparent],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)
-              .createShader(const Rect.fromLTRB(0, 250, 0, 400));
+              .createShader(
+            const Rect.fromLTRB(0, 250, 0, 400),
+          );
         },
         blendMode: BlendMode.dstIn,
         child: Image.network(
@@ -198,16 +203,16 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
   ListView _buildListView() {
     return ListView.builder(
-            itemCount: 2,
-            itemBuilder: (_, index) {
-              return const Card(
-                  color: Colors.white,
-                  child: ListTile(
-                    leading: CircleAvatar(),
-                    title: Text("Nama Orang"),
-                    subtitle: Text(
-                        "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
-                  ));
-            });
+        itemCount: 2,
+        itemBuilder: (_, index) {
+          return const Card(
+              color: Colors.white,
+              child: ListTile(
+                leading: CircleAvatar(),
+                title: Text("Nama Orang"),
+                subtitle: Text(
+                    "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
+              ));
+        });
   }
 }
