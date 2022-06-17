@@ -144,10 +144,12 @@ class _HomePageState extends State<HomePage> {
                 return Text("${snapshot.error}");
               }
               return const Center(
-                  child: SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: CircularProgressIndicator()));
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }));
   }
 
