@@ -5,33 +5,28 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 
-
-
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
-  
+
   @override
   State<HistoryPage> createState() => _HistoryPageState();
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-
   final storage = const FlutterSecureStorage();
 
   Future<List<HistTrans>> fetchHistory() async {
-  var token = await storage.read(key: "TOKEN");
-  var response =
-      await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/history'),
+    var token = await storage.read(key: "TOKEN");
+    var response = await http.get(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/history'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization' : 'Bearer $token '
-        }
-      );
-  return (json.decode(response.body)['data'] as List)
-      .map((e) => HistTrans.fromJson(e))
-      .toList();
+          'Authorization': 'Bearer $token '
+        });
+    return (json.decode(response.body)['data'] as List)
+        .map((e) => HistTrans.fromJson(e))
+        .toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,40 +39,8 @@ class _HistoryPageState extends State<HistoryPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 5, bottom: 5),
-                  child: Text(
-                    "History Transaction",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: 22),
-                  ),
-                ),
-                SizedBox(
-                  height: 1000,
-                  child: FutureBuilder(
-                    future: fetchHistory(),
-                    builder: (context, AsyncSnapshot snapshot) {
-                      if(snapshot.hasData){
-                        List<HistTrans> history = snapshot.data as List<HistTrans>;
-                        return ListView.separated(
-                          itemCount: 3,
-                          itemBuilder: (context, index) => listTransaction(history[index]),
-                          separatorBuilder: (BuildContext context, int index) =>
-                              const SizedBox(height: 5),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
-                      }
-                      return const Center(
-                        child: SizedBox(
-                          height: 30,
-                          width: 30,
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                text(),
+                listHistory(),
               ],
             ),
           ),
@@ -86,7 +49,49 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  Card listTransaction(HistTrans history) {
+  Padding text() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5, bottom: 5),
+      child: Text(
+        "History Transaction",
+        style:
+            blackTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 22),
+      ),
+    );
+  }
+
+  SizedBox listHistory() {
+    return SizedBox(
+      height: 700,
+      child: FutureBuilder(
+        future: fetchHistory(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            List<HistTrans> history = snapshot.data as List<HistTrans>;
+            return ListView.separated(
+              itemCount: history.length,
+              itemBuilder: (context, index) => transaction(history[index]),
+              separatorBuilder: (BuildContext context, int index) =>
+                  const SizedBox(height: 5),
+            );
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text("Silahkan login terlebih dahulu"),
+            );
+          }
+          return const Center(
+            child: SizedBox(
+              height: 30,
+              width: 30,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Card transaction(HistTrans history) {
     return Card(
       color: Colors.white,
       child: Padding(
@@ -102,7 +107,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.bold, fontSize: 12),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   "${history.pax} x Rp. ${history.harga}",
                   style: blackTextStyle.copyWith(
@@ -119,7 +124,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     style: blackTextStyle.copyWith(
                         fontWeight: FontWeight.bold, fontSize: 12),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     "June 16,2022",
                     style: blackTextStyle.copyWith(
@@ -136,7 +141,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.bold, fontSize: 12),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   history.total.toString(),
                   style: blackTextStyle.copyWith(
