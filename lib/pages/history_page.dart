@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -16,7 +17,6 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage>
     with TickerProviderStateMixin {
-  
   final storage = const FlutterSecureStorage();
   late Future<List<HistTrans>> future;
 
@@ -33,14 +33,13 @@ class _HistoryPageState extends State<HistoryPage>
         .toList();
   }
 
-
   late TabController _tabController;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
-     _tabController.addListener(() {
+    _tabController.addListener(() {
       setState(() {});
     });
     future = fetchHistory();
@@ -54,7 +53,6 @@ class _HistoryPageState extends State<HistoryPage>
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -102,9 +100,7 @@ class _HistoryPageState extends State<HistoryPage>
                   const SizedBox(height: 5),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Silahkan login terlebih dahulu"),
-            );
+            return Text("${snapshot.error}");
           }
           return const Center(
             child: SizedBox(
@@ -125,14 +121,12 @@ class _HistoryPageState extends State<HistoryPage>
         padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          
           children: [
             Text(
               history.namaPaket,
               style: blackTextStyle.copyWith(
                   fontWeight: FontWeight.w600, fontSize: 16),
             ),
-
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,15 +136,13 @@ class _HistoryPageState extends State<HistoryPage>
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.w400, fontSize: 14),
                 ),
-                
                 Text(
-                  DateFormat.MMMMEEEEd().format(history.createdAt),
+                  DateFormat.yMMMMd().format(history.createdAt),
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.w400, fontSize: 14),
                 )
               ],
             ),
-
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -160,21 +152,17 @@ class _HistoryPageState extends State<HistoryPage>
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.w400, fontSize: 14),
                 ),
-
-                Row(
-                    children : [ 
-                      Icon(Icons.airplane_ticket),
-                      SizedBox(width: 3),
-                      Text(
-                      "Pax (${history.pax}) x ${history.harga}",
-                      style: blackTextStyle.copyWith(
-                          fontWeight: FontWeight.w400, fontSize: 14),
-                    ),
-                  ]
-                )
+                Row(children: [
+                  Icon(Icons.airplane_ticket),
+                  SizedBox(width: 3),
+                  Text(
+                    "Pax (${history.pax}) x ${history.harga}",
+                    style: blackTextStyle.copyWith(
+                        fontWeight: FontWeight.w400, fontSize: 14),
+                  ),
+                ])
               ],
             ),
-
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -184,18 +172,13 @@ class _HistoryPageState extends State<HistoryPage>
                   style: blackTextStyle.copyWith(
                       fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-
-                
-              Text(
-                "Rp. ${history.total.toString()}",
-                style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold, fontSize: 14),
-              ),
-
+                Text(
+                  "Rp. ${history.total.toString()}",
+                  style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold, fontSize: 14),
+                ),
               ],
             ),
-
-            
           ],
         ),
       ),
@@ -224,7 +207,11 @@ class _HistoryPageState extends State<HistoryPage>
         labelColor: Colors.black,
         labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
         controller: _tabController,
-        indicatorColor: _tabController.index == 0? Colors.black : _tabController.index == 1? Colors.green[600]:Colors.red,
+        indicatorColor: _tabController.index == 0
+            ? Colors.black
+            : _tabController.index == 1
+                ? Colors.green[600]
+                : Colors.red,
         tabs: [
           Tab(
             child: Row(
@@ -235,30 +222,36 @@ class _HistoryPageState extends State<HistoryPage>
             ),
           ),
           Tab(
-            child: Row(
-              children: [
-                Icon(Icons.check_circle_outline,color:  _tabController.index== 1
-                  ? Colors.green[600]
-                  : Colors.green[300],),
-                Text(
-                  " Success",
-                  style: TextStyle(color:_tabController.index== 1
-                  ? Colors.green[600]
-                  : Colors.green[300]),
-                )
-              ]
-            ),
+            child: Row(children: [
+              Icon(
+                Icons.check_circle_outline,
+                color: _tabController.index == 1
+                    ? Colors.green[700]
+                    : Colors.green[300],
+              ),
+              Text(
+                " Success",
+                style: TextStyle(
+                    color: _tabController.index == 1
+                        ? Colors.green[700]
+                        : Colors.green[300]),
+              )
+            ]),
           ),
           Tab(
             child: Row(
-              children:[
-                Icon(Icons.sms_failed_outlined,color:  _tabController.index == 2
-                  ? Colors.red
-                  : Colors.red[300],),
-                Text(" Rejected",
-                  style: TextStyle(color: _tabController.index==2
-                  ? Colors.red
-                  : Colors.red[300]),
+              children: [
+                Icon(
+                  Icons.sms_failed_outlined,
+                  color:
+                      _tabController.index == 2 ? Colors.red : Colors.red[300],
+                ),
+                Text(
+                  " Rejected",
+                  style: TextStyle(
+                      color: _tabController.index == 2
+                          ? Colors.red
+                          : Colors.red[300]),
                 ),
               ],
             ),
