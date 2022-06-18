@@ -24,7 +24,7 @@ class HistTrans{
         harga: json["harga"],
         total: json["total"],
         status: json["status"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -34,6 +34,6 @@ class HistTrans{
         "harga": harga,
         "total": total,
         "status": status,
-        "created_at": createdAt.toIso8601String(),
+        "created_at": createdAt,
     };
 }
