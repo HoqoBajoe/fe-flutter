@@ -13,7 +13,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    _startApp();
+    // _startApp();
     Timer(
       const Duration(seconds: 3),
       () => Navigator.pushNamed(context, '/start'),
@@ -21,15 +21,15 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
   }
 
-  Future<void> _startApp() async {
-    final storage = FlutterSecureStorage();
-    var token = await storage.read(key: "TOKEN");
-    if (token == null) {
-      print(token);
-    } else {
-      print('error');
-    }
-  }
+  // Future<void> _startApp() async {
+  //   final storage = FlutterSecureStorage();
+  //   var token = await storage.read(key: "TOKEN");
+  //   if (token == null) {
+  //     print(token);
+  //   } else {
+  //     print('error');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
