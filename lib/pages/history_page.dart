@@ -6,6 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class HistoryPage extends StatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
 
@@ -98,9 +100,7 @@ class _HistoryPageState extends State<HistoryPage>
                   const SizedBox(height: 5),
             );
           } else if (snapshot.hasError) {
-            return const Center(
-              child: Text("Silahkan login terlebih dahulu"),
-            );
+            return Text("${snapshot.error}");
           }
           return const Center(
             child: SizedBox(
@@ -119,59 +119,66 @@ class _HistoryPageState extends State<HistoryPage>
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
+            Text(
+              history.namaPaket,
+              style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.w600, fontSize: 16),
+            ),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  history.namaPaket,
+                  "Tanggal pemesanan",
                   style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 12),
+                      fontWeight: FontWeight.w400, fontSize: 14),
                 ),
-                const SizedBox(height: 5),
                 Text(
-                  "${history.pax} x Rp. ${history.harga}",
+                  DateFormat.yMMMMd().format(history.createdAt),
                   style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 12),
+                      fontWeight: FontWeight.w400, fontSize: 14),
                 )
               ],
             ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  history.metode,
+                  style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.w400, fontSize: 14),
+                ),
+                Row(children: [
+                  Icon(Icons.airplane_ticket),
+                  SizedBox(width: 3),
                   Text(
-                    history.metode,
+                    "Pax (${history.pax}) x ${history.harga}",
                     style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: 12),
+                        fontWeight: FontWeight.w400, fontSize: 14),
                   ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "June 16,2022",
-                    style: blackTextStyle.copyWith(
-                        fontWeight: FontWeight.bold, fontSize: 12),
-                  )
-                ],
-              ),
+                ])
+              ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   "Total",
                   style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 12),
+                      fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                const SizedBox(height: 5),
                 Text(
-                  history.total.toString(),
+                  "Rp. ${history.total.toString()}",
                   style: blackTextStyle.copyWith(
-                      fontWeight: FontWeight.bold, fontSize: 12),
-                )
+                      fontWeight: FontWeight.bold, fontSize: 14),
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -219,14 +226,14 @@ class _HistoryPageState extends State<HistoryPage>
               Icon(
                 Icons.check_circle_outline,
                 color: _tabController.index == 1
-                    ? Colors.green[600]
+                    ? Colors.green[700]
                     : Colors.green[300],
               ),
               Text(
                 " Success",
                 style: TextStyle(
                     color: _tabController.index == 1
-                        ? Colors.green[600]
+                        ? Colors.green[700]
                         : Colors.green[300]),
               )
             ]),
