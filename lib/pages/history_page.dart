@@ -15,7 +15,6 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage>
     with TickerProviderStateMixin {
-  
   final storage = const FlutterSecureStorage();
   late Future<List<HistTrans>> future;
 
@@ -32,14 +31,13 @@ class _HistoryPageState extends State<HistoryPage>
         .toList();
   }
 
-
   late TabController _tabController;
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
     super.initState();
-     _tabController.addListener(() {
+    _tabController.addListener(() {
       setState(() {});
     });
     future = fetchHistory();
@@ -53,7 +51,6 @@ class _HistoryPageState extends State<HistoryPage>
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -203,7 +200,11 @@ class _HistoryPageState extends State<HistoryPage>
         labelColor: Colors.black,
         labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
         controller: _tabController,
-        indicatorColor: _tabController.index == 0? Colors.black : _tabController.index == 1? Colors.green[600]:Colors.red,
+        indicatorColor: _tabController.index == 0
+            ? Colors.black
+            : _tabController.index == 1
+                ? Colors.green[600]
+                : Colors.red,
         tabs: [
           Tab(
             child: Row(
@@ -214,30 +215,36 @@ class _HistoryPageState extends State<HistoryPage>
             ),
           ),
           Tab(
-            child: Row(
-              children: [
-                Icon(Icons.check_circle_outline,color:  _tabController.index== 1
-                  ? Colors.green[600]
-                  : Colors.green[300],),
-                Text(
-                  " Success",
-                  style: TextStyle(color:_tabController.index== 1
-                  ? Colors.green[600]
-                  : Colors.green[300]),
-                )
-              ]
-            ),
+            child: Row(children: [
+              Icon(
+                Icons.check_circle_outline,
+                color: _tabController.index == 1
+                    ? Colors.green[600]
+                    : Colors.green[300],
+              ),
+              Text(
+                " Success",
+                style: TextStyle(
+                    color: _tabController.index == 1
+                        ? Colors.green[600]
+                        : Colors.green[300]),
+              )
+            ]),
           ),
           Tab(
             child: Row(
-              children:[
-                Icon(Icons.sms_failed_outlined,color:  _tabController.index == 2
-                  ? Colors.red
-                  : Colors.red[300],),
-                Text(" Rejected",
-                  style: TextStyle(color: _tabController.index==2
-                  ? Colors.red
-                  : Colors.red[300]),
+              children: [
+                Icon(
+                  Icons.sms_failed_outlined,
+                  color:
+                      _tabController.index == 2 ? Colors.red : Colors.red[300],
+                ),
+                Text(
+                  " Rejected",
+                  style: TextStyle(
+                      color: _tabController.index == 2
+                          ? Colors.red
+                          : Colors.red[300]),
                 ),
               ],
             ),
