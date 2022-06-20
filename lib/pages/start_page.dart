@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hoqobajoe/network/api.dart';
 import 'package:hoqobajoe/pages/about_us.dart';
 import 'package:hoqobajoe/pages/edit_profile_page.dart';
@@ -19,16 +20,21 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage> {
   int _currentIndex = 0;
-  final network = Network();
 
-  @override
-  void initState() {
-    if (network.checkToken() != null) {
+  Future<void> checkIfLoggedIn() async {
+    var storage = const FlutterSecureStorage();
+    var token = await storage.read(key: "TOKEN");
+    if (token != null) {
       setState(() {
         screen[1] = HistoryPage();
         screen[3] = EditProfilePage();
       });
     }
+  }
+
+  @override
+  void initState() {
+    checkIfLoggedIn();
     super.initState();
   }
 
