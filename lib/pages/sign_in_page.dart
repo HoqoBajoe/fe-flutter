@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hoqobajoe/model/user.dart';
-import 'package:hoqobajoe/network/api.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -14,8 +13,9 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  final storage = new FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
+  @override
   Widget build(BuildContext context) {
     var txtEditEmail = TextEditingController();
     var txtEditPass = TextEditingController();
@@ -34,17 +34,17 @@ class _SignInPageState extends State<SignInPage> {
 
       if (response.statusCode == 200) {
         var responseJson = jsonDecode(response.body);
-        print(responseJson['data']['token']);
+        await storage.write(
+            key: "ID", value: responseJson['data']['id'].toString());
+        await storage.write(key: "NAMA", value: responseJson['data']['nama']);
+        await storage.write(key: "ROLE", value: responseJson['data']['role']);
         await storage.write(key: "TOKEN", value: responseJson['data']['token']);
-        Navigator.pushNamed(context, '/');
+        Navigator.pushNamed(context, '/start');
         return print('success');
       } else {
-        // throw Exception('Failed to login');
         return print('error');
       }
     }
-
-    // var res = await Network().auth({data},'/login');
 
     Widget header() {
       return Container(
@@ -197,15 +197,16 @@ class _SignInPageState extends State<SignInPage> {
               style: blackTextStyle,
             ),
             GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/sign_up');
-                },
-                child: Text(
-                  'Daftar',
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),),
+              onTap: () {
+                Navigator.pushNamed(context, '/sign_up');
+              },
+              child: Text(
+                'Daftar',
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ],
         ),
       );

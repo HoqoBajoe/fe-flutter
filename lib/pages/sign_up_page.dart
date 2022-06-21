@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:hoqobajoe/theme.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -6,7 +9,35 @@ class SignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int _currentIndex = 4;
+    var txtEditNama = TextEditingController();
+    var txtEditEmail = TextEditingController();
+    var txtEditPass = TextEditingController();
+
+    Future<void> registerUser(
+      String nama,
+      String email,
+      String password,
+    ) async {
+      final response = await http.post(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/register'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'nama': nama,
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        Navigator.pushNamed(context, '/start');
+        return print('success');
+      } else {
+        // throw Exception('Failed to login');
+        return print('error');
+      }
+    }
 
     Widget header() {
       return Container(
@@ -62,6 +93,7 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditNama,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Nama',
                           hintStyle: hintTextStyle,
@@ -104,6 +136,7 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditEmail,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Alamat Email',
                           hintStyle: hintTextStyle,
@@ -146,6 +179,7 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditPass,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Password',
@@ -167,7 +201,8 @@ class SignUpPage extends StatelessWidget {
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/homepage');
+            registerUser(txtEditNama.text, txtEditEmail.text, txtEditPass.text);
+            Navigator.pushNamed(context, '/start');
           },
           style: TextButton.styleFrom(
             backgroundColor: secondaryColor,
