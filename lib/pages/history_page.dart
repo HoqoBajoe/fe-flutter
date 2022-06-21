@@ -19,6 +19,7 @@ class _HistoryPageState extends State<HistoryPage>
     with TickerProviderStateMixin {
   final storage = const FlutterSecureStorage();
   late Future<List<HistTrans>> future;
+  bool? dataStatus;
 
   Future<List<HistTrans>> fetchHistory() async {
     var token = await storage.read(key: "TOKEN");
@@ -28,9 +29,15 @@ class _HistoryPageState extends State<HistoryPage>
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token '
         });
-    return (json.decode(response.body)['data'] as List)
-        .map((e) => HistTrans.fromJson(e))
-        .toList();
+
+    if (response.statusCode == 200) {
+      dataStatus = true;
+      var responseJson = json.decode(response.body)['data'];
+      return (responseJson as List).map((e) => HistTrans.fromJson(e)).toList();
+    } else {
+      dataStatus = false;
+      return <HistTrans>[];
+    }
   }
 
   late TabController _tabController;
@@ -51,28 +58,6 @@ class _HistoryPageState extends State<HistoryPage>
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                text(),
-                tabBar(_tabController),
-                tabBarView(_tabController),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Padding text() {
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -91,6 +76,7 @@ class _HistoryPageState extends State<HistoryPage>
         future: future,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+            dataStatus = true;
             List<HistTrans> history = snapshot.data as List<HistTrans>;
             history = history.where((a) => a.status == status).toList();
             return ListView.separated(
@@ -153,8 +139,8 @@ class _HistoryPageState extends State<HistoryPage>
                       fontWeight: FontWeight.w400, fontSize: 14),
                 ),
                 Row(children: [
-                  Icon(Icons.airplane_ticket),
-                  SizedBox(width: 3),
+                  const Icon(Icons.airplane_ticket),
+                  const SizedBox(width: 3),
                   Text(
                     "Pax (${history.pax}) x ${history.harga}",
                     style: blackTextStyle.copyWith(
@@ -187,17 +173,29 @@ class _HistoryPageState extends State<HistoryPage>
 
   Container tabBarView(TabController _tabController) {
     return Container(
-      padding: const EdgeInsets.all(10),
-      height: 700,
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          listHistory("Pending"),
-          listHistory("Accepted"),
-          listHistory("Rejected"),
-        ],
-      ),
-    );
+        padding: const EdgeInsets.all(10),
+        height: 700,
+        // child: TabBarView(
+        //   controller: _tabController,
+        //   children: [
+        //     listHistory("Pending"),
+        //     listHistory("Accepted"),
+        //     listHistory("Rejected"),
+        //   ],
+        // ),
+        child: dataStatus == true
+            ? TabBarView(
+                controller: _tabController,
+                children: [
+                  listHistory("Pending"),
+                  listHistory("Accepted"),
+                  listHistory("Rejected"),
+                ],
+              )
+            : const Padding(
+                padding: EdgeInsets.only(bottom: 125),
+                child: Center(child: Text('Tidak ada riwayat transaksi..')),
+              ));
   }
 
   SizedBox tabBar(TabController _tabController) {
@@ -257,6 +255,42 @@ class _HistoryPageState extends State<HistoryPage>
             ),
           )
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                text(),
+                tabBar(_tabController),
+                tabBarView(_tabController),
+                // if (dataStatus == true) ...[
+                //   tabBar(_tabController),
+                //   tabBarView(_tabController),
+                // ] else ...[
+                //   Column(
+                //     mainAxisAlignment: MainAxisAlignment.center,
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: const [
+                //       Center(
+                //         child: Text('No Data'),
+                //       ),
+                //     ],
+                //   )
+                // ]
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

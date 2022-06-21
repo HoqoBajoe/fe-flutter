@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hoqobajoe/network/api.dart';
 import 'package:hoqobajoe/pages/about_us.dart';
 import 'package:hoqobajoe/pages/edit_profile_page.dart';
 import 'package:hoqobajoe/pages/history_page.dart';
