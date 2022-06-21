@@ -76,7 +76,6 @@ class _HistoryPageState extends State<HistoryPage>
         future: future,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            dataStatus = true;
             List<HistTrans> history = snapshot.data as List<HistTrans>;
             history = history.where((a) => a.status == status).toList();
             return ListView.separated(
@@ -175,14 +174,15 @@ class _HistoryPageState extends State<HistoryPage>
     return Container(
         padding: const EdgeInsets.all(10),
         height: 700,
-        // child: TabBarView(
-        //   controller: _tabController,
-        //   children: [
-        //     listHistory("Pending"),
-        //     listHistory("Accepted"),
-        //     listHistory("Rejected"),
-        //   ],
-        // ),
+        //   child: TabBarView(
+        //     controller: _tabController,
+        //     children: [
+        //       listHistory("Pending"),
+        //       listHistory("Accepted"),
+        //       listHistory("Rejected"),
+        //     ],
+        //   ),
+        // );
         child: dataStatus == true
             ? TabBarView(
                 controller: _tabController,

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:hoqobajoe/components/bottom_navbar.dart';
 import 'package:hoqobajoe/pages/detail_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
-// import 'package:hoqobajoe/pages/home_page.dart';
 import 'package:hoqobajoe/pages/search_page.dart';
 import 'package:hoqobajoe/pages/sign_in_page.dart';
 import 'package:hoqobajoe/pages/sign_up_page.dart';
 import 'package:hoqobajoe/pages/splash_page.dart';
 import 'package:hoqobajoe/pages/start_page.dart';
+import 'package:hoqobajoe/pages/transaction_page.dart';
 import 'pages/edit_profile_page.dart';
 
 void main() {
@@ -33,7 +32,8 @@ class MyApp extends StatelessWidget {
         '/homepage': (context) => const HomePage(),
         '/detail_page': (context) => DetailPage(),
         '/search': (context) => const SearchPage(),
-        '/edit_profile_page': (context) => const EditProfilePage()
+        '/edit_profile_page': (context) => const EditProfilePage(),
+        '/transaction': (context) => TransactionPage(),
       },
     );
   }
