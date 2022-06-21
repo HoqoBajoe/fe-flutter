@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:http/http.dart' as http;
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);

@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/theme.dart';
+import 'package:http/http.dart' as http;
 
 class TransactionPage extends StatefulWidget {
   TransactionPage({Key? key}) : super(key: key);
@@ -15,14 +16,45 @@ class TransactionPage extends StatefulWidget {
 class _TransactionPageState extends State<TransactionPage> {
   String? metodeValue;
   String? namaUser;
+  var idUser;
   int? totalValue;
 
   Future<void> getStorage() async {
     var storage = const FlutterSecureStorage();
     var nama = await storage.read(key: "NAMA");
+    var id = await storage.read(key: "ID");
+    print(id);
     setState(() {
-      namaUser = nama.toString();
+      namaUser = nama;
+      idUser = id;
     });
+  }
+
+  Future<void> doTransaction(int idUser, int idPaket, String metode, int pax,
+      int total, String updtAt, String crteAt) async {
+    final response = await http.post(
+      Uri.parse('https://hoqobajoe.herokuapp.com/api/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      // body: jsonEncode(<String, String>{
+      //   'email': email,
+      //   'password': password,
+      // }),
+    );
+
+    // if (response.statusCode == 200) {
+    //   var responseJson = jsonDecode(response.body);
+    //   await storage.write(
+    //       key: "ID", value: responseJson['data']['id'].toString());
+    //   await storage.write(key: "NAMA", value: responseJson['data']['nama']);
+    //   await storage.write(key: "ROLE", value: responseJson['data']['role']);
+    //   await storage.write(key: "TOKEN", value: responseJson['data']['token']);
+    //   Navigator.pushNamed(context, '/start');
+    //   return print('success');
+    // } else {
+    //   return print('error');
+    // }
   }
 
   @override
@@ -34,10 +66,6 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     Paket paket = ModalRoute.of(context)!.settings.arguments as Paket;
-    int? tempTotalVal = totalValue;
-    setState(() {
-      tempTotalVal = paket.harga;
-    });
 
     AppBar buildAppBar() {
       return AppBar(
@@ -188,10 +216,15 @@ class _TransactionPageState extends State<TransactionPage> {
                   "Total",
                   style: blackTextStyle,
                 ),
-                Text(
-                  "Rp. $totalValue",
-                  style: blackTextStyle,
-                ),
+                totalValue == null
+                    ? Text(
+                        "Rp. ${paket.harga}",
+                        style: blackTextStyle,
+                      )
+                    : Text(
+                        "Rp. $totalValue",
+                        style: blackTextStyle,
+                      )
               ],
             )
           ],
@@ -206,7 +239,7 @@ class _TransactionPageState extends State<TransactionPage> {
         margin: const EdgeInsets.only(top: 75),
         child: TextButton(
           onPressed: () {
-            print('di klik');
+            print(int.parse(idUser));
           },
           style: TextButton.styleFrom(
             backgroundColor: Color(0XFF31A5BE),
