@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,47 +16,23 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  String? metodeValue;
+  var metodeValue;
   String? namaUser;
+  var paxValue;
   var idUser;
+  var token;
   int? totalValue;
 
   Future<void> getStorage() async {
     var storage = const FlutterSecureStorage();
     var nama = await storage.read(key: "NAMA");
     var id = await storage.read(key: "ID");
-    print(id);
+    var getToken = await storage.read(key: "TOKEN");
     setState(() {
       namaUser = nama;
       idUser = id;
+      token = getToken;
     });
-  }
-
-  Future<void> doTransaction(int idUser, int idPaket, String metode, int pax,
-      int total, String updtAt, String crteAt) async {
-    final response = await http.post(
-      Uri.parse('https://hoqobajoe.herokuapp.com/api/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      // body: jsonEncode(<String, String>{
-      //   'email': email,
-      //   'password': password,
-      // }),
-    );
-
-    // if (response.statusCode == 200) {
-    //   var responseJson = jsonDecode(response.body);
-    //   await storage.write(
-    //       key: "ID", value: responseJson['data']['id'].toString());
-    //   await storage.write(key: "NAMA", value: responseJson['data']['nama']);
-    //   await storage.write(key: "ROLE", value: responseJson['data']['role']);
-    //   await storage.write(key: "TOKEN", value: responseJson['data']['token']);
-    //   Navigator.pushNamed(context, '/start');
-    //   return print('success');
-    // } else {
-    //   return print('error');
-    // }
   }
 
   @override
@@ -66,6 +44,30 @@ class _TransactionPageState extends State<TransactionPage> {
   @override
   Widget build(BuildContext context) {
     Paket paket = ModalRoute.of(context)!.settings.arguments as Paket;
+
+    Future<void> doTransaction(
+      String metode,
+      String pax,
+    ) async {
+      final response = await http.post(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/transaction/paket/' +
+            paket.id.toString()),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token '
+        },
+        body: jsonEncode(<String, String>{
+          'metode': metode,
+          'pax': pax,
+        }),
+      );
+      if (response.statusCode == 201) {
+        print('trans success');
+        Navigator.pushNamed(context, '/start');
+      } else {
+        print('trans fail');
+      }
+    }
 
     AppBar buildAppBar() {
       return AppBar(
@@ -202,9 +204,10 @@ class _TransactionPageState extends State<TransactionPage> {
                   onValue: (value) {
                     setState(() {
                       totalValue = (value as int) * paket.harga;
+                      paxValue = value.toString();
                     });
                     print("ini totalValue $totalValue");
-                    print("ini paxValue $value");
+                    print("ini paxValue $paxValue");
                   },
                 )
               ],
@@ -239,7 +242,8 @@ class _TransactionPageState extends State<TransactionPage> {
         margin: const EdgeInsets.only(top: 75),
         child: TextButton(
           onPressed: () {
-            print(int.parse(idUser));
+            print('do trans');
+            doTransaction(metodeValue, paxValue);
           },
           style: TextButton.styleFrom(
             backgroundColor: Color(0XFF31A5BE),
