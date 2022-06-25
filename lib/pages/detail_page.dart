@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/model/paket.dart';
+import 'package:hoqobajoe/model/review.dart';
+import 'package:hoqobajoe/pages/home_page.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:http/http.dart' as http;
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -18,6 +23,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     Paket paket = ModalRoute.of(context)!.settings.arguments as Paket;
+
+    Future<List<ReviewUser>> fetchReview() async {
+      var response = await http.get(Uri.parse(
+          'https://hoqobajoe.herokuapp.com/api/review/paket/${paket.id}'));
+      return (json.decode(response.body)['data'] as List)
+          .map((e) => ReviewUser.fromJson(e))
+          .toList();
+    }
 
     List<String> urlImages = paket.photo_wisata;
 
@@ -201,18 +214,54 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ),
       );
 
-  ListView _buildListView() {
-    return ListView.builder(
-        itemCount: 2,
-        itemBuilder: (_, index) {
-          return const Card(
-              color: Colors.white,
-              child: ListTile(
-                leading: CircleAvatar(),
-                title: Text("Nama Orang"),
-                subtitle: Text(
-                    "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
-              ));
-        });
+  Container _buildListView() {
+    return Container(
+        margin: const EdgeInsets.only(left: 30),
+        height: 300,
+        child: FutureBuilder(
+            future: fetchReview(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                List<Paket> paket = snapshot.data as List<Paket>;
+                return ListView.separated(
+                  itemCount: paket.length,
+                  itemBuilder: (BuildContext context, int index) => InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/detail_page",
+                          arguments: paket[index]);
+                    },
+                    child: buildListRecs(paket[index].photo_wisata[1],
+                        paket[index].nama_paket, paket[index].destinasi_wisata),
+                  ),
+                  separatorBuilder: (content, _) => const SizedBox(height: 12),
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }));
+    // return FutureBuilder(
+    //   future: fetch,
+    //   builder: (context, AsyncSnapshot snapshot) {
+
+    // })
+    // return ListView.builder(
+    //     itemCount: 2,
+    //     itemBuilder: (_, index) {
+    //       return const Card(
+    //           color: Colors.white,
+    //           child: ListTile(
+    //             leading: CircleAvatar(),
+    //             title: Text("Nama Orang"),
+    //             subtitle: Text(
+    //                 "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
+    //           ));
+    //     });
   }
 }
