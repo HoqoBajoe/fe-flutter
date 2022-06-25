@@ -77,7 +77,8 @@ class _HistoryPageState extends State<HistoryPage>
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data == null) {
-              return const Text('Null Data');
+              print('no data');
+              return Text('Null Data');
             } else {
               List<HistTrans> history = snapshot.data as List<HistTrans>;
               history = history.where((a) => a.status == status).toList();
