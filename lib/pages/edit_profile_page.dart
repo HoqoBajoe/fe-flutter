@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -74,6 +75,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     } else {
       throw Exception('failed to edit');
     }
+  }
+
+  Future<void> doLogout() async {
+    var storage = const FlutterSecureStorage();
+    await storage.deleteAll();
+    print('logout');
+    Navigator.pushNamed(context, '/start');
   }
 
   @override
