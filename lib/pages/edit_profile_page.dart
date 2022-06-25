@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
@@ -11,12 +14,163 @@ class EditProfilePage extends StatefulWidget {
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
-  // Future<List<User>> fetchUser() async {
-  //   var response =
-  //       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/users'));
+class editUser {
+  final String nama;
+  final String email;
+  final String role;
 
-  // }
+  editUser({
+    required this.nama,
+    required this.email,
+    required this.role,
+  });
+
+  factory editUser.fromJson(Map<String, dynamic> json) {
+    return editUser(
+      nama: json['nama'],
+      email: json['email'],
+      role: json['role'],
+    );
+  }
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  final storage = const FlutterSecureStorage();
+
+  Future<editUser> fetchUser() async {
+    var token = await storage.read(key: "TOKEN");
+    var response = await http.get(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token '
+        });
+
+    var responseJson = json.decode(response.body)['data'];
+    return editUser.fromJson(responseJson);
+
+    // if (response.statusCode == 200) {
+    //   var responseJson = json.decode(response.body)['data'];
+    //   return editUser.fromJson(responseJson);
+    // } else {
+    //   return
+    // }
+  }
+
+  Future<void> editProfileBTN(String nama, String? email) async {
+    var token = await storage.read(key: "TOKEN");
+    final response = await http.put(
+      Uri.parse('https://hoqobajoe.herokuapp.com/api/user/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token '
+      },
+      body: jsonEncode(
+        <String, String?>{
+          'nama': nama,
+          'email': email,
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Success',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xff3ccd71),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Update profile sukses",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff12313E),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xff3ccd71), // Background color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Gagal',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xfff04f4e),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Update profile gagal",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff12313E),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xfff04f4e), // Background color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+  }
 
   Future<void> doLogout() async {
     var storage = const FlutterSecureStorage();
@@ -27,13 +181,69 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget profilePicture() {
-      return Icon(Icons.account_circle_sharp, size: 150);
+    var txtEditName = TextEditingController();
+    var txtEditEmail = TextEditingController();
+    Widget logOutButton() {
+      return Container(
+        height: 40,
+        width: 100,
+        margin: const EdgeInsets.only(top: 10),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: alertColor,
+          ),
+          child: Text(
+            'Log Out',
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              fontWeight: bold,
+            ),
+          ),
+          onPressed: () {
+            doLogout();
+          },
+        ),
+      );
     }
 
-    Widget nameField() {
+    AppBar buildAppbar() {
+      return AppBar(
+        centerTitle: true,
+        title: Text(
+          'My Profile',
+          style: GoogleFonts.poppins(
+              fontSize: 20, color: Colors.black, fontWeight: bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          Container(
+            margin: EdgeInsets.all(5),
+            child: logOutButton(),
+          )
+        ],
+      );
+    }
+
+    Widget profilePicture() {
+      // return Icon(Icons.account_circle_sharp, size: 150);
       return Container(
-        margin: const EdgeInsets.only(top: 20),
+        child: Column(
+          children: [
+            const Center(
+              child: Image(
+                image: AssetImage("assets/images/user_vector.png"),
+                width: 190,
+              ),
+            )
+          ],
+        ),
+      );
+    }
+
+    Widget nameField(String nama) {
+      return Container(
+        margin: const EdgeInsets.only(top: 50),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -60,8 +270,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditName,
                         decoration: InputDecoration.collapsed(
-                          hintText: 'Muhammad Ghifari Adrian',
+                          hintText: nama,
                           hintStyle: hintTextStyle,
                         ),
                       ),
@@ -73,7 +284,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       );
     }
 
-    Widget emailField() {
+    Widget emailField(String email) {
       return Container(
         margin: const EdgeInsets.only(top: 10),
         child: Column(
@@ -102,8 +313,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      controller: txtEditEmail,
                       decoration: InputDecoration.collapsed(
-                        hintText: 'ghifari@mail.com',
+                        hintText: email,
                         hintStyle: hintTextStyle,
                       ),
                     ),
@@ -120,11 +332,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       return Container(
         height: 50,
         width: double.infinity,
-        margin: const EdgeInsets.only(top: 125),
+        margin: const EdgeInsets.only(top: 20),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
-            primary: backgroundColor5,
+            primary: secondaryColor,
           ),
           child: Text(
             'Edit Profile',
@@ -133,62 +345,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
               fontWeight: bold,
             ),
           ),
-          onPressed: () {},
-        ),
-      );
-    }
-
-    Widget logOutButton() {
-      return Container(
-        height: 40,
-        width: 100,
-        margin: const EdgeInsets.only(top: 10),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: alertColor,
-          ),
-          child: Text(
-            'Log Out',
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: bold,
-            ),
-          ),
           onPressed: () {
-            doLogout();
+            editProfileBTN(txtEditName.text, txtEditEmail.text);
           },
         ),
       );
     }
 
-    AppBar buildAppbar() {
-      return AppBar(
-        leading: Container(
-          padding: const EdgeInsets.only(left: 10),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded),
-            color: Colors.black,
-            onPressed: () => {},
-          ),
-        ),
-        centerTitle: true,
-        title: Text(
-          'My Profile',
-          style: GoogleFonts.poppins(
-              fontSize: 20, color: Colors.black, fontWeight: bold),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: <Widget>[
-          Container(
-            margin: const EdgeInsets.all(5),
-            child: logOutButton(),
-          )
-        ],
-      );
-    }
-
-    Widget showRole() {
+    Widget showRole(String role) {
       return Container(
         margin: const EdgeInsets.only(top: 10),
         child: Column(
@@ -217,7 +381,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   Expanded(
                     child: Text(
-                      'USER',
+                      role,
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black.withOpacity(0.5),
@@ -240,14 +404,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
       body: SafeArea(
         child: Container(
           margin: const EdgeInsets.only(top: 40.0, left: 10, right: 10),
-          child: Column(
-            children: [
-              profilePicture(),
-              nameField(),
-              emailField(),
-              showRole(),
-              editButton(),
-            ],
+          child: FutureBuilder(
+            future: fetchUser(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                editUser _profile = snapshot.data as editUser;
+                return Column(
+                  children: [
+                    profilePicture(),
+                    nameField(_profile.nama),
+                    emailField(_profile.email),
+                    showRole(_profile.role),
+                    editButton(),
+                  ],
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                child: SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
           ),
         ),
       ),
