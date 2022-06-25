@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/network/api.dart';
 import 'package:hoqobajoe/pages/about_us.dart';
+import 'package:hoqobajoe/pages/edit_profile_page.dart';
 import 'package:hoqobajoe/pages/history_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
 import 'package:hoqobajoe/pages/my_profile.dart';
+import 'package:hoqobajoe/pages/need_login.dart';
 import 'package:hoqobajoe/pages/search_page.dart';
 import 'package:hoqobajoe/pages/sign_in_page.dart';
 import 'package:hoqobajoe/theme.dart';
@@ -16,11 +19,23 @@ class StartPage extends StatefulWidget {
 
 class _StartPageState extends State<StartPage> {
   int _currentIndex = 0;
+  final network = Network();
 
-  final screen = const [
+  @override
+  void initState() {
+    if (network.checkToken() != null) {
+      setState(() {
+        screen[1] = HistoryPage();
+        screen[3] = EditProfilePage();
+      });
+    }
+    super.initState();
+  }
+
+  final screen = [
     HomePage(),
-    HistoryPage(),
-    AboutUsPage(),
+    const NeedLogin(),
+    const AboutUsPage(),
     SignInPage(),
   ];
 
