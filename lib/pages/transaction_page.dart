@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -62,10 +63,101 @@ class _TransactionPageState extends State<TransactionPage> {
         }),
       );
       if (response.statusCode == 201) {
-        print('trans success');
-        Navigator.pushNamed(context, '/start');
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: 200,
+              color: Colors.white,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Success',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xff3ccd71),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Update profile sukses",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xff12313E),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color(0xff3ccd71), // Background color
+                      ),
+                      child: Text(
+                        'Close',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () => Navigator.pushNamed(context, '/start'),
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
       } else {
-        print('trans fail');
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: 200,
+              color: Colors.white,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Gagal',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xfff04f4e),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Update profile gagal",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xff12313E),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color(0xfff04f4e), // Background color
+                      ),
+                      child: Text(
+                        'Close',
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onPressed: () =>  Navigator.pop(context)
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
       }
     }
 
@@ -241,7 +333,6 @@ class _TransactionPageState extends State<TransactionPage> {
         margin: const EdgeInsets.only(top: 75),
         child: TextButton(
           onPressed: () {
-            print('do trans');
             doTransaction(metodeValue, paxValue);
           },
           style: TextButton.styleFrom(
