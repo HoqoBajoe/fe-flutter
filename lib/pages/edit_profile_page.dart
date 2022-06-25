@@ -40,24 +40,24 @@ class editUser {
 class _EditProfilePageState extends State<EditProfilePage> {
   final storage = const FlutterSecureStorage();
 
-  Future<editUser> fetchUser() async {
+  Future<List<editUser>> fetchUser() async {
     var token = await storage.read(key: "TOKEN");
-    final response = await http.get(
-      Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token '
-      },
-    );
+    var response = await http.get(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token '
+        });
 
     if (response.statusCode == 200) {
-      return editUser.fromJson(jsonDecode(response.body)['data']);
+      var responseJson = json.decode(response.body)['data'];
+      return (responseJson as List).map((e) => editUser.fromJson(e)).toList();
     } else {
-      throw Exception('Failed to fetch User');
+      return <editUser>[];
     }
   }
 
-  Future<editUser> editProfileBTN(String nama, String email) async {
+  Future<void> editProfileBTN(String nama, String email) async {
     var token = await storage.read(key: "TOKEN");
     final response = await http.put(
       Uri.parse('https://hoqobajoe.herokuapp.com/api/update'),
@@ -71,7 +71,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (response.statusCode == 200) {
-      return editUser.fromJson(jsonDecode(response.body));
+      Navigator.pushNamed(context, '/start');
+      return print('success');
     } else {
       throw Exception('failed to edit');
     }
@@ -86,6 +87,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    var txtEditName = TextEditingController();
+    var txtEditEmail = TextEditingController();
     Widget logOutButton() {
       return Container(
         height: 40,
@@ -103,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/start');
+            doLogout();
           },
         ),
       );
@@ -173,6 +176,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: txtEditName,
                         decoration: InputDecoration.collapsed(
                           hintText: nama,
                           hintStyle: hintTextStyle,
@@ -215,6 +219,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   Expanded(
                     child: TextFormField(
+                      controller: txtEditEmail,
                       decoration: InputDecoration.collapsed(
                         hintText: email,
                         hintStyle: hintTextStyle,
@@ -246,7 +251,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               fontWeight: bold,
             ),
           ),
-          onPressed: () {},
+          onPressed: () {
+            editProfileBTN(txtEditName.text, txtEditEmail.text);
+          },
         ),
       );
     }
