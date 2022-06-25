@@ -6,6 +6,7 @@ import 'package:hoqobajoe/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import '../model/user.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -18,13 +19,11 @@ class editUser {
   final String nama;
   final String email;
   final String role;
-  final String token;
 
   editUser({
     required this.nama,
     required this.email,
     required this.role,
-    required this.token,
   });
 
   factory editUser.fromJson(Map<String, dynamic> json) {
@@ -32,7 +31,6 @@ class editUser {
       nama: json['nama'],
       email: json['email'],
       role: json['role'],
-      token: json['token'],
     );
   }
 }
@@ -40,7 +38,7 @@ class editUser {
 class _EditProfilePageState extends State<EditProfilePage> {
   final storage = const FlutterSecureStorage();
 
-  Future<List<editUser>> fetchUser() async {
+  Future<editUser> fetchUser() async {
     var token = await storage.read(key: "TOKEN");
     var response = await http.get(
         Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
@@ -49,32 +47,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
           'Authorization': 'Bearer $token '
         });
 
-    if (response.statusCode == 200) {
-      var responseJson = json.decode(response.body)['data'];
-      return (responseJson as List).map((e) => editUser.fromJson(e)).toList();
-    } else {
-      return <editUser>[];
-    }
+    var responseJson = json.decode(response.body)['data'];
+    print(responseJson);
+    return editUser.fromJson(responseJson);
+
+    // if (response.statusCode == 200) {
+    //   var responseJson = json.decode(response.body)['data'];
+    //   return editUser.fromJson(responseJson);
+    // } else {
+    //   return
+    // }
   }
 
-  Future<void> editProfileBTN(String nama, String email) async {
+  Future<void> editProfileBTN(String nama, String? email) async {
     var token = await storage.read(key: "TOKEN");
     final response = await http.put(
-      Uri.parse('https://hoqobajoe.herokuapp.com/api/update'),
+      Uri.parse('https://hoqobajoe.herokuapp.com/api/user/update'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token '
       },
       body: jsonEncode(
-        <String, String>{'nama': nama, 'email': email},
+        <String, String?>{
+          'nama': nama,
+          'email': email,
+        },
       ),
     );
 
     if (response.statusCode == 200) {
-      Navigator.pushNamed(context, '/start');
       return print('success');
     } else {
-      throw Exception('failed to edit');
+      return print('failed to edit');
     }
   }
 
@@ -241,7 +245,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         margin: const EdgeInsets.only(top: 150),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            shape: StadiumBorder(),
+            shape: const StadiumBorder(),
             primary: secondaryColor,
           ),
           child: Text(
@@ -324,6 +328,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     editButton(),
                   ],
                 );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
               }
               return const Center(
                 child: SizedBox(
