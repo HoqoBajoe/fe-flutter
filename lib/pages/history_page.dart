@@ -76,15 +76,19 @@ class _HistoryPageState extends State<HistoryPage>
         future: future,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            dataStatus = true;
-            List<HistTrans> history = snapshot.data as List<HistTrans>;
-            history = history.where((a) => a.status == status).toList();
-            return ListView.separated(
-              itemCount: history.length,
-              itemBuilder: (context, index) => transaction(history[index]),
-              separatorBuilder: (BuildContext context, int index) =>
-                  const SizedBox(height: 5),
-            );
+            if (snapshot.data == null) {
+              print('no data');
+              return Text('Null Data');
+            } else {
+              List<HistTrans> history = snapshot.data as List<HistTrans>;
+              history = history.where((a) => a.status == status).toList();
+              return ListView.separated(
+                itemCount: history.length,
+                itemBuilder: (context, index) => transaction(history[index]),
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(height: 5),
+              );
+            }
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
@@ -173,29 +177,30 @@ class _HistoryPageState extends State<HistoryPage>
 
   Container tabBarView(TabController _tabController) {
     return Container(
-        padding: const EdgeInsets.all(10),
-        height: 700,
-        // child: TabBarView(
-        //   controller: _tabController,
-        //   children: [
-        //     listHistory("Pending"),
-        //     listHistory("Accepted"),
-        //     listHistory("Rejected"),
-        //   ],
-        // ),
-        child: dataStatus == true
-            ? TabBarView(
-                controller: _tabController,
-                children: [
-                  listHistory("Pending"),
-                  listHistory("Accepted"),
-                  listHistory("Rejected"),
-                ],
-              )
-            : const Padding(
-                padding: EdgeInsets.only(bottom: 125),
-                child: Center(child: Text('Tidak ada riwayat transaksi..')),
-              ));
+      padding: const EdgeInsets.all(10),
+      height: 700,
+      child: TabBarView(
+        controller: _tabController,
+        children: [
+          listHistory("Pending"),
+          listHistory("Accepted"),
+          listHistory("Rejected"),
+        ],
+      ),
+    );
+    // child: dataStatus == true
+    //     ? TabBarView(
+    //         controller: _tabController,
+    //         children: [
+    //           listHistory("Pending"),
+    //           listHistory("Accepted"),
+    //           listHistory("Rejected"),
+    //         ],
+    //       )
+    //     : const Padding(
+    //         padding: EdgeInsets.only(bottom: 125),
+    //         child: Center(child: Text('Tidak ada riwayat transaksi..')),
+    //       ));
   }
 
   SizedBox tabBar(TabController _tabController) {
