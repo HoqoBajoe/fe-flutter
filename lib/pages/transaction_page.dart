@@ -140,18 +140,17 @@ class _TransactionPageState extends State<TransactionPage> {
                       ),
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color(0xfff04f4e), // Background color
-                      ),
-                      child: Text(
-                        'Close',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                        style: ElevatedButton.styleFrom(
+                          primary: const Color(0xfff04f4e), // Background color
                         ),
-                      ),
-                      onPressed: () =>  Navigator.pop(context)
-                    )
+                        child: Text(
+                          'Close',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: () => Navigator.pop(context))
                   ],
                 ),
               ),
