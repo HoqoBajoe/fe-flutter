@@ -77,8 +77,7 @@ class _HistoryPageState extends State<HistoryPage>
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data == null) {
-              print('no data');
-              return Text('Null Data');
+              return const Text('Null Data');
             } else {
               List<HistTrans> history = snapshot.data as List<HistTrans>;
               history = history.where((a) => a.status == status).toList();
@@ -188,19 +187,6 @@ class _HistoryPageState extends State<HistoryPage>
         ],
       ),
     );
-    // child: dataStatus == true
-    //     ? TabBarView(
-    //         controller: _tabController,
-    //         children: [
-    //           listHistory("Pending"),
-    //           listHistory("Accepted"),
-    //           listHistory("Rejected"),
-    //         ],
-    //       )
-    //     : const Padding(
-    //         padding: EdgeInsets.only(bottom: 125),
-    //         child: Center(child: Text('Tidak ada riwayat transaksi..')),
-    //       ));
   }
 
   SizedBox tabBar(TabController _tabController) {
@@ -278,20 +264,6 @@ class _HistoryPageState extends State<HistoryPage>
                 text(),
                 tabBar(_tabController),
                 tabBarView(_tabController),
-                // if (dataStatus == true) ...[
-                //   tabBar(_tabController),
-                //   tabBarView(_tabController),
-                // ] else ...[
-                //   Column(
-                //     mainAxisAlignment: MainAxisAlignment.center,
-                //     crossAxisAlignment: CrossAxisAlignment.center,
-                //     children: const [
-                //       Center(
-                //         child: Text('No Data'),
-                //       ),
-                //     ],
-                //   )
-                // ]
               ],
             ),
           ),
