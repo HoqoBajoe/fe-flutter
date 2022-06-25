@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hoqobajoe/theme.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class SignUpPage extends StatelessWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
@@ -32,10 +32,101 @@ class SignUpPage extends StatelessWidget {
 
       if (response.statusCode == 201) {
         Navigator.pushNamed(context, '/start');
-        return print('success');
+        return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Success',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xff3ccd71),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Register akun sukses",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff12313E),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xff3ccd71), // Background color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
       } else {
-        // throw Exception('Failed to login');
-        return print('error');
+        return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Gagal',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xfff04f4e),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Register akun gagal",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff12313E),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xfff04f4e), // Background color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
       }
     }
 
@@ -202,7 +293,6 @@ class SignUpPage extends StatelessWidget {
         child: TextButton(
           onPressed: () {
             registerUser(txtEditNama.text, txtEditEmail.text, txtEditPass.text);
-            Navigator.pushNamed(context, '/start');
           },
           style: TextButton.styleFrom(
             backgroundColor: secondaryColor,

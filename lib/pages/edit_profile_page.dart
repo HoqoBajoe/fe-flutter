@@ -48,13 +48,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     var responseJson = json.decode(response.body)['data'];
     return editUser.fromJson(responseJson);
-
-    // if (response.statusCode == 200) {
-    //   var responseJson = json.decode(response.body)['data'];
-    //   return editUser.fromJson(responseJson);
-    // } else {
-    //   return
-    // }
   }
 
   Future<void> editProfileBTN(String nama, String? email) async {
@@ -113,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         color: Colors.white,
                       ),
                     ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pushNamed(context, '/start'),
                   )
                 ],
               ),
