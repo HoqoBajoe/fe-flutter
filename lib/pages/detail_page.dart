@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/model/review.dart';
@@ -20,11 +22,30 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   int activeIndex = 0;
   late Future<List<ReviewUser>> future;
+  TextEditingController controllerReview = TextEditingController();
+  // TextEditingController controllerRating = TextEditingController();
+  var token;
+  var ratingStars;
+
+  Future<void> getStorage() async {
+    var storage = const FlutterSecureStorage();
+    var getToken = await storage.read(key: "TOKEN");
+    setState(() {
+      token = getToken;
+    });
+  }
+
+  @override
+  void initState() {
+    getStorage();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     Paket paket = ModalRoute.of(context)!.settings.arguments as Paket;
 
+    // Get Review
     Future<List<ReviewUser>> fetchReview() async {
       var response = await http.get(Uri.parse(
           'https://hoqobajoe.herokuapp.com/api/review/paket/' +
@@ -40,9 +61,34 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       }
     }
 
+    // Add Review
+    Future<void> doAddReview(int stars, String review) async {
+      final response = await http.post(
+        Uri.parse('https://hoqobajoe.herokuapp.com/api/review/paket/' +
+            paket.id.toString()),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token '
+        },
+        body: jsonEncode({
+          'stars': stars,
+          'review': review,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        var responseJson = jsonDecode(response.body);
+        print(responseJson);
+        Navigator.pushNamed(context, '/start');
+        return print('success add review');
+      } else {
+        return print('error add review');
+      }
+    }
+
     List<String> urlImages = paket.photo_wisata;
 
-    TabController _tabController = TabController(length: 2, vsync: this);
+    TabController _tabController = TabController(length: 3, vsync: this);
 
     Padding titleAndPrice(String title, int price) {
       return Padding(
@@ -55,6 +101,71 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                     fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Text("Harga : IDR $price")
+          ],
+        ),
+      );
+    }
+
+    SingleChildScrollView addReview() {
+      return SingleChildScrollView(
+        physics: ClampingScrollPhysics(),
+        child: Column(
+          children: <Widget>[
+            RatingBar.builder(
+              initialRating: 1,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: false,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                ratingStars = rating;
+              },
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              child: TextField(
+                decoration: InputDecoration(
+                    icon: const Icon(
+                      Icons.chat,
+                      color: Colors.black,
+                    ),
+                    hintText: "Masukkan Review...",
+                    labelText: "Review",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6))),
+                onChanged: (value) {
+                  setState(() {});
+                },
+                controller: controllerReview,
+              ),
+            ),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.only(bottom: 5),
+                child: ElevatedButton(
+                  onPressed: () {
+                    doAddReview(ratingStars.toInt(), controllerReview.text);
+                  },
+                  child: const Text(
+                    "Submit Review",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: primaryColor,
+                    padding: const EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                )),
           ],
         ),
       );
@@ -92,12 +203,18 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
     Widget buildReview(String nama, String comment, String rating) {
       return Container(
+        margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(nama),
+                Text(
+                  nama,
+                  style: blackTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -108,10 +225,19 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 const SizedBox(
                   width: 10,
                 ),
-                Text(rating),
+                Text(
+                  rating,
+                  style: blackTextStyle.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
-            Text(comment),
+            Text(
+              comment,
+              style: blackTextStyle,
+              textAlign: TextAlign.justify,
+            ),
           ],
         ),
       );
@@ -119,7 +245,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
     Container listReview() {
       return Container(
-          margin: const EdgeInsets.only(left: 30),
           height: 300,
           child: FutureBuilder(
               future: fetchReview(),
@@ -130,16 +255,22 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   }
                   List<ReviewUser> reviewData =
                       snapshot.data as List<ReviewUser>;
-                  return ListView.separated(
-                    itemCount: reviewData.length,
-                    itemBuilder: (BuildContext context, int index) => InkWell(
-                        onTap: () {},
-                        child: buildReview(
-                            reviewData[index].nama,
-                            reviewData[index].review,
-                            reviewData[index].stars.toString())),
-                    separatorBuilder: (content, _) =>
-                        const SizedBox(height: 12),
+                  return MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.separated(
+                      itemCount: reviewData.length,
+                      itemBuilder: (BuildContext context, int index) => InkWell(
+                          onTap: () {},
+                          child: buildReview(
+                              reviewData[index].nama,
+                              reviewData[index].review,
+                              reviewData[index].stars.toString())),
+                      separatorBuilder: (content, _) => const Divider(
+                        height: 3,
+                        color: Colors.black,
+                      ),
+                    ),
                   );
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
@@ -159,7 +290,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       return Container(
         margin: EdgeInsets.symmetric(horizontal: defaultMargin),
         padding: const EdgeInsets.all(10),
-        height: 150,
+        height: 175,
         child: TabBarView(
           controller: _tabController,
           children: [
@@ -167,16 +298,43 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(paket),
+                  Text(
+                    paket,
+                    style: blackTextStyle,
+                    textAlign: TextAlign.justify,
+                  ),
                   const SizedBox(height: 10),
-                  const Text("Daftar Destinasi :"),
-                  Text("  • ${destinasi[0]} "),
-                  Text("  • ${destinasi[1]}"),
-                  Text("  • ${destinasi[2]}"),
+                  Text(
+                    "Daftar Destinasi : ",
+                    style: blackTextStyle,
+                    textAlign: TextAlign.justify,
+                  ),
+                  Text(
+                    "  • ${destinasi[0]}",
+                    style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                  Text(
+                    "  • ${destinasi[1]}",
+                    style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
+                  Text(
+                    "  • ${destinasi[2]}",
+                    style: blackTextStyle.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
                 ],
               ),
             ),
-            listReview()
+            listReview(),
+            addReview()
           ],
         ),
       );
@@ -192,7 +350,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           unselectedLabelColor: Colors.grey,
           controller: _tabController,
           indicatorColor: Colors.black,
-          tabs: const [Tab(text: "Overview"), Tab(text: "Review")],
+          tabs: const [
+            Tab(text: "Overview"),
+            Tab(text: "Review"),
+            Tab(text: "Add Review")
+          ],
         ),
       );
     }
@@ -265,6 +427,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: appBar(),
       body: Column(

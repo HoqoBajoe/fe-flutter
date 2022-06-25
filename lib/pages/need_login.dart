@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/theme.dart';
 
 class NeedLogin extends StatelessWidget {
   const NeedLogin({Key? key}) : super(key: key);
@@ -7,7 +8,10 @@ class NeedLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('History Page'),
+        child: Text(
+          'Harus login terlebih dahulu',
+          style: blackTextStyle,
+        ),
       ),
     );
   }

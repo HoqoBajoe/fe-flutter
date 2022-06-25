@@ -40,6 +40,7 @@ class _TransactionPageState extends State<TransactionPage> {
   void initState() {
     getStorage();
     super.initState();
+    paxValue = 1;
   }
 
   @override
@@ -48,7 +49,7 @@ class _TransactionPageState extends State<TransactionPage> {
 
     Future<void> doTransaction(
       String metode,
-      String pax,
+      int pax,
     ) async {
       final response = await http.post(
         Uri.parse('https://hoqobajoe.herokuapp.com/api/transaction/paket/' +
@@ -57,7 +58,7 @@ class _TransactionPageState extends State<TransactionPage> {
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token '
         },
-        body: jsonEncode(<String, String>{
+        body: jsonEncode({
           'metode': metode,
           'pax': pax,
         }),
@@ -294,10 +295,8 @@ class _TransactionPageState extends State<TransactionPage> {
                   onValue: (value) {
                     setState(() {
                       totalValue = (value as int) * paket.harga;
-                      paxValue = value.toString();
+                      paxValue = value;
                     });
-                    print("ini totalValue $totalValue");
-                    print("ini paxValue $paxValue");
                   },
                 )
               ],
