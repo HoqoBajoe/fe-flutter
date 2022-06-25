@@ -5,17 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:http/http.dart' as http;
 
-// Future<List<dynamic>> fetchPaket() async {
-//   final response =
-//       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
-//   if (response.statusCode == 200) {
-//     return jsonDecode(response.body)["data"];
-//   } else {
-//     // If the server did not return a 200 OK response,
-//     // then throw an exception.
-//     throw Exception('Failed to load album');
-//   }
-// }
 Future<List<Paket>> fetchPaket() async {
   var response =
       await http.get(Uri.parse('https://hoqobajoe.herokuapp.com/api/paket'));
@@ -38,12 +27,12 @@ class _HomePageState extends State<HomePage> {
       appBar: buildAppBar(),
       body: SafeArea(
           child: Container(
-        child: buildBody(),
+        child: buildHomePage(),
       )),
     );
   }
 
-  ListView buildBody() {
+  ListView buildHomePage() {
     return ListView(children: [
       Column(
         children: [
