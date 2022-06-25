@@ -124,7 +124,6 @@ class _TransactionPageState extends State<TransactionPage> {
           metodeValue = changedValue;
           setState(() {
             metodeValue;
-            print(metodeValue);
           });
         },
         items: <String>[
