@@ -21,6 +21,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var txtSearch = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,8 +170,12 @@ class _HomePageState extends State<HomePage> {
       ),
       decoration: BoxDecoration(
           color: Colors.grey[200], borderRadius: BorderRadius.circular(12)),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        controller: txtSearch,
+        onSubmitted: (value) {
+          Navigator.pushNamed(context, '/search', arguments: value.toString());
+        },
+        decoration: const InputDecoration(
             hintText: "Search Place",
             hintStyle: TextStyle(fontSize: 16, color: Colors.grey),
             prefixIcon: Icon(Icons.search),
@@ -276,7 +282,10 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Row(
                   children: [
-                    const Icon(Icons.star_rounded),
+                    const Icon(
+                      Icons.star_rounded,
+                      color: Colors.yellow,
+                    ),
                     Text(
                       "4.9",
                       style: GoogleFonts.poppins(
@@ -302,28 +311,6 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.transparent,
       elevation: 0,
-      // leading: Padding(
-      //   padding: const EdgeInsets.only(left: 10),
-      //   child: IconButton(
-      //     icon: const Icon(
-      //       Icons.menu,
-      //       color: Colors.black,
-      //     ),
-      //     onPressed: () => {},
-      //   ),
-      // ),
-      // actions: [
-      //   Padding(
-      //     padding: const EdgeInsets.only(right: 10),
-      //     child: IconButton(
-      //       icon: const Icon(
-      //         Icons.account_circle_rounded,
-      //         color: Colors.black,
-      //       ),
-      //       onPressed: () => {},
-      //     ),
-      //   )
-      // ],
     );
   }
 }

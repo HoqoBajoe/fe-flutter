@@ -32,7 +32,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
       if (response.statusCode == 200) {
         var responseJson = json.decode(response.body)['data'];
-        print(responseJson);
         return (responseJson as List)
             .map((e) => ReviewUser.fromJson(e))
             .toList();
@@ -99,14 +98,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
             Row(
               children: [
                 Text(nama),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
-                Icon(
+                const Icon(
                   Icons.star,
                   color: Colors.yellow,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Text(rating),
@@ -258,7 +257,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 Icons.arrow_back_rounded,
                 color: Colors.black,
               ),
-              onPressed: () => {Navigator.pushNamed(context, "/start")},
+              onPressed: () => {
+                Navigator.pop(context),
+              },
             ),
           ));
     }
