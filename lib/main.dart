@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/pages/Location.dart';
 // import 'package:hoqobajoe/components/bottom_navbar.dart';
 import 'package:hoqobajoe/pages/detail_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
@@ -31,9 +32,10 @@ class MyApp extends StatelessWidget {
         '/sign_in': (context) => const SignInPage(),
         '/sign_up': (context) => const SignUpPage(),
         '/homepage': (context) => const HomePage(),
-        '/detail_page': (context) => DetailPage(),
+        '/detail_page': (context) => const DetailPage(),
         '/search': (context) => const SearchPage(),
-        '/edit_profile_page': (context) => const EditProfilePage()
+        '/edit_profile_page': (context) => const EditProfilePage(),
+        '/location': (context) => const Location()
       },
     );
   }

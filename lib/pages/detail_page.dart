@@ -214,54 +214,54 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         ),
       );
 
-  Container _buildListView() {
-    return Container(
-        margin: const EdgeInsets.only(left: 30),
-        height: 300,
-        child: FutureBuilder(
-            future: fetchReview(),
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                List<Paket> paket = snapshot.data as List<Paket>;
-                return ListView.separated(
-                  itemCount: paket.length,
-                  itemBuilder: (BuildContext context, int index) => InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, "/detail_page",
-                          arguments: paket[index]);
-                    },
-                    child: buildListRecs(paket[index].photo_wisata[1],
-                        paket[index].nama_paket, paket[index].destinasi_wisata),
-                  ),
-                  separatorBuilder: (content, _) => const SizedBox(height: 12),
-                );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return const Center(
-                child: SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }));
+  ListView _buildListView() {
+    // return Container(
+    //     margin: const EdgeInsets.only(left: 30),
+    //     height: 300,
+    //     child: FutureBuilder(
+    //         future: fetchReview(),
+    //         builder: (context, AsyncSnapshot snapshot) {
+    //           if (snapshot.hasData) {
+    //             List<Paket> paket = snapshot.data as List<Paket>;
+    //             return ListView.separated(
+    //               itemCount: paket.length,
+    //               itemBuilder: (BuildContext context, int index) => InkWell(
+    //                 onTap: () {
+    //                   Navigator.pushNamed(context, "/detail_page",
+    //                       arguments: paket[index]);
+    //                 },
+    //                 child: buildListRecs(paket[index].photo_wisata[1],
+    //                     paket[index].nama_paket, paket[index].destinasi_wisata),
+    //               ),
+    //               separatorBuilder: (content, _) => const SizedBox(height: 12),
+    //             );
+    //           } else if (snapshot.hasError) {
+    //             return Text("${snapshot.error}");
+    //           }
+    //           return const Center(
+    //             child: SizedBox(
+    //               height: 30,
+    //               width: 30,
+    //               child: CircularProgressIndicator(),
+    //             ),
+    //           );
+    //         }));
     // return FutureBuilder(
     //   future: fetch,
     //   builder: (context, AsyncSnapshot snapshot) {
 
     // })
-    // return ListView.builder(
-    //     itemCount: 2,
-    //     itemBuilder: (_, index) {
-    //       return const Card(
-    //           color: Colors.white,
-    //           child: ListTile(
-    //             leading: CircleAvatar(),
-    //             title: Text("Nama Orang"),
-    //             subtitle: Text(
-    //                 "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
-    //           ));
-    //     });
+    return ListView.builder(
+        itemCount: 2,
+        itemBuilder: (_, index) {
+          return const Card(
+              color: Colors.white,
+              child: ListTile(
+                leading: CircleAvatar(),
+                title: Text("Nama Orang"),
+                subtitle: Text(
+                    "sdfffffffffffffffffffffdsffffffffdssssssssssssssssssssssssssssssssssssssssssssssssssss"),
+              ));
+        });
   }
 }
