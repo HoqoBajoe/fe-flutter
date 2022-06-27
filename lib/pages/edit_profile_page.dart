@@ -38,6 +38,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final storage = const FlutterSecureStorage();
 
   Future<editUser> fetchUser() async {
+    var nullResponse = editUser(nama: 'null', email: 'null', role: 'null');
     var token = await storage.read(key: "TOKEN");
     var response = await http.get(
         Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
@@ -46,15 +47,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
           'Authorization': 'Bearer $token '
         });
 
-    var responseJson = json.decode(response.body)['data'];
-    return editUser.fromJson(responseJson);
+    // var responseJson = json.decode(response.body)['data'];
+    // return editUser.fromJson(responseJson);
 
-    // if (response.statusCode == 200) {
-    //   var responseJson = json.decode(response.body)['data'];
-    //   return editUser.fromJson(responseJson);
-    // } else {
-    //   return
-    // }
+    if (response.statusCode == 200) {
+      var responseJson = json.decode(response.body)['data'];
+      return editUser.fromJson(responseJson);
+    } else {
+      return nullResponse;
+    }
   }
 
   Future<void> editProfileBTN(String nama, String? email) async {
