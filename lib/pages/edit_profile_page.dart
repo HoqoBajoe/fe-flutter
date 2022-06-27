@@ -175,7 +175,53 @@ class _EditProfilePageState extends State<EditProfilePage> {
     var storage = const FlutterSecureStorage();
     await storage.deleteAll();
     print('logout');
-    Navigator.pushNamed(context, '/start');
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 200,
+            color: Colors.white,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    'Success',
+                    style: GoogleFonts.poppins(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xff3ccd71),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Logout sukses",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: const Color(0xff12313E),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xff3ccd71), // Background color
+                    ),
+                    child: Text(
+                      'Close',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pushNamed(context, '/start'),
+                  )
+                ],
+              ),
+            ),
+          );
+        },
+      );
   }
 
   @override
