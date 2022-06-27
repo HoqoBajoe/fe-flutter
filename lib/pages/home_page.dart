@@ -100,11 +100,6 @@ class _HomePageState extends State<HomePage> {
             style:
                 GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-          Text(
-            "View All",
-            style: GoogleFonts.poppins(
-                fontSize: 16, fontWeight: FontWeight.normal),
-          ),
         ],
       ),
     );
