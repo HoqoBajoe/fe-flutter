@@ -18,16 +18,16 @@ class TransactionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<TransactionPage> {
-  var metodeValue;
+  String? metodeValue;
   String? namaUser;
   var paxValue;
-  var idUser;
-  var token;
+  String? idUser;
+  String? token;
   int? totalValue;
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
+  var storage = const FlutterSecureStorage();
 
   Future<void> getStorage() async {
-    var storage = const FlutterSecureStorage();
     var nama = await storage.read(key: "NAMA");
     var id = await storage.read(key: "ID");
     var getToken = await storage.read(key: "TOKEN");
@@ -258,7 +258,7 @@ class _TransactionPageState extends State<TransactionPage> {
         margin: const EdgeInsets.only(top: 75),
         child: TextButton(
           onPressed: () {
-            doTransaction(metodeValue, paxValue);
+            doTransaction(metodeValue.toString(), paxValue);
           },
           style: TextButton.styleFrom(
             backgroundColor: Color(0XFF31A5BE),
