@@ -20,6 +20,10 @@ Color transparentColor = Colors.transparent;
 Color blackColor = const Color(0xff2E2E2E);
 Color hintColor = const Color.fromARGB(255, 162, 211, 193);
 
+Color successColor = const Color(0xff3ccd71);
+Color gagalColor = const Color(0xfff04f4e);
+Color messageColor = const Color(0xff12313E);
+
 TextStyle plainTextStyle = GoogleFonts.poppins();
 
 TextStyle primaryTextStyle = GoogleFonts.poppins(

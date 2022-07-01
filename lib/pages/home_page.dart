@@ -2,8 +2,11 @@ import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/components/list_paket.dart';
 import 'package:hoqobajoe/model/paket.dart';
+import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 Future<List<Paket>> fetchPaket() async {
   var response =
@@ -22,6 +25,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var txtSearch = TextEditingController();
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +75,12 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushNamed(context, "/detail_page",
                           arguments: paket[index]);
                     },
-                    child: buildListRecs(paket[index].photo_wisata[1],
-                        paket[index].nama_paket, paket[index].destinasi_wisata),
+                    child: listPaket(
+                      paket[index].photo_wisata[1],
+                      paket[index].nama_paket,
+                      paket[index].destinasi_wisata,
+                      paket[index].harga,
+                    ),
                   ),
                   separatorBuilder: (content, _) => const SizedBox(height: 12),
                 );
@@ -238,7 +246,13 @@ class _HomePageState extends State<HomePage> {
         ],
       );
 
-  Widget buildListRecs(String imagePhoto, paketName, List<String> list) => Row(
+  Widget buildListRecs(
+    String imagePhoto,
+    paketName,
+    List<String> list,
+    int harga,
+  ) =>
+      Row(
         children: [
           SizedBox(
             height: 75,
@@ -275,21 +289,12 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.black,
                       fontSize: 14),
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      color: Colors.yellow,
-                    ),
-                    Text(
-                      "4.9",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black,
-                          fontSize: 14),
-                    ),
-                  ],
-                )
+                Text(
+                  formatCurrency.format(harga),
+                  style: blackTextStyle.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),

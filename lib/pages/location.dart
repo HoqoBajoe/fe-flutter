@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Location extends StatefulWidget {
@@ -14,17 +15,32 @@ class _LocationState extends State<Location> {
       CameraPosition(target: _kMapCenter, zoom: 11.0, tilt: 0, bearing: 0);
   @override
   Widget build(BuildContext context) {
+    AppBar buildAppBar() {
+      return AppBar(
+          centerTitle: true,
+          title: Text(
+            "Hoqo Bajoe",
+            style: GoogleFonts.poppins(
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () => {
+                Navigator.pop(context),
+              },
+            ),
+          ));
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xff59CAFF),
-        elevation: 0,
-        title: const Text(
-          "Hoqo Bajoe",
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 22, color: Colors.white),
-        ),
-        centerTitle: true,
-      ),
+      appBar: buildAppBar(),
       body: GoogleMap(
         initialCameraPosition: _kInitialPosition,
         markers: _createMarker(),

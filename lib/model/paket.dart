@@ -7,7 +7,7 @@ class Paket {
   int harga;
   DateTime created_at;
   DateTime updated_at;
-  
+
   Paket({
     required this.id,
     required this.nama_paket,

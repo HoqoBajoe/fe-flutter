@@ -8,6 +8,7 @@ import 'package:flutter_number_picker/flutter_number_picker.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class TransactionPage extends StatefulWidget {
   TransactionPage({Key? key}) : super(key: key);
@@ -23,6 +24,7 @@ class _TransactionPageState extends State<TransactionPage> {
   var idUser;
   var token;
   int? totalValue;
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
 
   Future<void> getStorage() async {
     var storage = const FlutterSecureStorage();
@@ -310,11 +312,11 @@ class _TransactionPageState extends State<TransactionPage> {
                 ),
                 totalValue == null
                     ? Text(
-                        "Rp. ${paket.harga}",
+                        formatCurrency.format(paket.harga),
                         style: blackTextStyle,
                       )
                     : Text(
-                        "Rp. $totalValue",
+                        formatCurrency.format(totalValue),
                         style: blackTextStyle,
                       )
               ],

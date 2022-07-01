@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:hoqobajoe/model/user.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -40,103 +39,12 @@ class _SignInPageState extends State<SignInPage> {
         await storage.write(key: "NAMA", value: responseJson['data']['nama']);
         await storage.write(key: "ROLE", value: responseJson['data']['role']);
         await storage.write(key: "TOKEN", value: responseJson['data']['token']);
-        
         Navigator.pushNamed(context, '/start');
-        return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Success',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xff3ccd71),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Login sukses",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff3ccd71), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+        modalMessage("Success!", const Color(0xff3ccd71), "Login sukses",
+            const Color(0xff12313E), context);
       } else {
-        return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Gagal',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xfff04f4e),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Email/password salah",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xfff04f4e), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+        modalMessage("Gagal", const Color(0xfff04f4e), "Email/password salah",
+            const Color(0xff12313E), context);
       }
     }
 
