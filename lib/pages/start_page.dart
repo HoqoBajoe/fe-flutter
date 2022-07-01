@@ -4,11 +4,8 @@ import 'package:hoqobajoe/pages/about_us.dart';
 import 'package:hoqobajoe/pages/edit_profile_page.dart';
 import 'package:hoqobajoe/pages/history_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
-import 'package:hoqobajoe/pages/my_profile.dart';
 import 'package:hoqobajoe/pages/need_login.dart';
-import 'package:hoqobajoe/pages/search_page.dart';
 import 'package:hoqobajoe/pages/sign_in_page.dart';
-import 'package:hoqobajoe/theme.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({Key? key}) : super(key: key);
@@ -41,7 +38,7 @@ class _StartPageState extends State<StartPage> {
     HomePage(),
     const NeedLogin(),
     const AboutUsPage(),
-    SignInPage(),
+    const SignInPage(),
   ];
 
   @override

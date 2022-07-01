@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/theme.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
@@ -37,6 +35,7 @@ class editUser {
 class _EditProfilePageState extends State<EditProfilePage> {
   final storage = const FlutterSecureStorage();
 
+  // Get User Data
   Future<editUser> fetchUser() async {
     var nullResponse = editUser(nama: 'null', email: 'null', role: 'null');
     var token = await storage.read(key: "TOKEN");
@@ -47,7 +46,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
           'Authorization': 'Bearer $token '
         });
 
-
     if (response.statusCode == 200) {
       var responseJson = json.decode(response.body)['data'];
       return editUser.fromJson(responseJson);
@@ -56,6 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  // Edit User Profile
   Future<void> editProfileBTN(String nama, String? email) async {
     var token = await storage.read(key: "TOKEN");
     final response = await http.put(
@@ -73,100 +72,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (response.statusCode == 200) {
-      return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Success',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xff3ccd71),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Update profile sukses",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff3ccd71), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pushNamed(context, '/start'),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
+      modalMessageNamed(
+        'Success',
+        successColor,
+        'Update profile success',
+        messageColor,
+        context,
+        '/start',
       );
     } else {
-      return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Gagal',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xfff04f4e),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Update profile gagal",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xfff04f4e), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
+      modalMessage(
+        'Gagal',
+        gagalColor,
+        'Update profile gagal',
+        messageColor,
+        context,
       );
     }
   }
@@ -174,54 +94,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> doLogout() async {
     var storage = const FlutterSecureStorage();
     await storage.deleteAll();
-    print('logout');
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Success',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xff3ccd71),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Logout sukses",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff3ccd71), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pushNamed(context, '/start'),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+    modalMessageNamed(
+      'Success',
+      successColor,
+      'Logout sukses',
+      messageColor,
+      context,
+      '/start',
+    );
   }
 
   @override
@@ -239,7 +119,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           child: Text(
             'Log Out',
-            style: GoogleFonts.poppins(
+            style: plainTextStyle.copyWith(
               fontSize: 12,
               fontWeight: bold,
             ),
@@ -256,14 +136,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
         centerTitle: true,
         title: Text(
           'My Profile',
-          style: GoogleFonts.poppins(
-              fontSize: 20, color: Colors.black, fontWeight: bold),
+          style: blackTextStyle.copyWith(
+            fontSize: 20,
+            fontWeight: bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: <Widget>[
           Container(
-            margin: EdgeInsets.all(5),
+            margin: const EdgeInsets.all(5),
             child: logOutButton(),
           )
         ],
@@ -271,18 +153,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
 
     Widget profilePicture() {
-      // return Icon(Icons.account_circle_sharp, size: 150);
-      return Container(
-        child: Column(
-          children: [
-            const Center(
-              child: Image(
-                image: AssetImage("assets/images/user_vector.png"),
-                width: 190,
-              ),
-            )
-          ],
-        ),
+      return Column(
+        children: const [
+          Center(
+            child: Image(
+              image: AssetImage("assets/images/user_vector.png"),
+              width: 190,
+            ),
+          )
+        ],
       );
     }
 
@@ -385,7 +264,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           child: Text(
             'Edit Profile',
-            style: GoogleFonts.poppins(
+            style: plainTextStyle.copyWith(
               fontSize: 15,
               fontWeight: bold,
             ),
@@ -427,7 +306,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   Expanded(
                     child: Text(
                       role,
-                      style: GoogleFonts.poppins(
+                      style: blackTextStyle.copyWith(
                         fontSize: 12,
                         color: Colors.black.withOpacity(0.5),
                         fontWeight: bold,

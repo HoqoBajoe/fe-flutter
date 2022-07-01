@@ -2,8 +2,11 @@ import 'dart:ui';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/components/list_paket.dart';
 import 'package:hoqobajoe/model/paket.dart';
+import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 Future<List<Paket>> fetchPaket() async {
   var response =
@@ -22,6 +25,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var txtSearch = TextEditingController();
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +75,12 @@ class _HomePageState extends State<HomePage> {
                       Navigator.pushNamed(context, "/detail_page",
                           arguments: paket[index]);
                     },
-                    child: buildListRecs(paket[index].photo_wisata[1],
-                        paket[index].nama_paket, paket[index].destinasi_wisata),
+                    child: listPaket(
+                      paket[index].photo_wisata[1],
+                      paket[index].nama_paket,
+                      paket[index].destinasi_wisata,
+                      paket[index].harga,
+                    ),
                   ),
                   separatorBuilder: (content, _) => const SizedBox(height: 12),
                 );
@@ -97,8 +105,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Recommended",
-            style:
-                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            style: blackTextStyle.copyWith(
+              fontSize: 22,
+              fontWeight: bold,
+            ),
           ),
         ],
       ),
@@ -147,8 +157,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Popular Category",
-            style:
-                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            style: blackTextStyle.copyWith(
+              fontSize: 22,
+              fontWeight: bold,
+            ),
           ),
         ],
       ),
@@ -189,7 +201,10 @@ class _HomePageState extends State<HomePage> {
           Text(
             "World of Paradise,",
             style: GoogleFonts.poppins(
-                fontSize: 38, fontWeight: FontWeight.bold, height: 0.5),
+              fontSize: 38,
+              fontWeight: FontWeight.bold,
+              height: 0.5,
+            ),
           ),
           Text(
             "Indonesia",
@@ -226,10 +241,11 @@ class _HomePageState extends State<HomePage> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     placeName,
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                        fontSize: 12),
+                    style: plainTextStyle.copyWith(
+                      fontWeight: regular,
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
@@ -238,7 +254,13 @@ class _HomePageState extends State<HomePage> {
         ],
       );
 
-  Widget buildListRecs(String imagePhoto, paketName, List<String> list) => Row(
+  Widget buildListRecs(
+    String imagePhoto,
+    paketName,
+    List<String> list,
+    int harga,
+  ) =>
+      Row(
         children: [
           SizedBox(
             height: 75,
@@ -262,34 +284,25 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   paketName,
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 18),
+                  style: blackTextStyle.copyWith(
+                    fontWeight: bold,
+                    fontSize: 18,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Text(
                   "${list[0]},${list[1]},...",
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                      fontSize: 14),
+                  style: blackTextStyle.copyWith(
+                    fontWeight: regular,
+                    fontSize: 14,
+                  ),
                 ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star_rounded,
-                      color: Colors.yellow,
-                    ),
-                    Text(
-                      "4.9",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.normal,
-                          color: Colors.black,
-                          fontSize: 14),
-                    ),
-                  ],
-                )
+                Text(
+                  formatCurrency.format(harga),
+                  style: blackTextStyle.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
             ),
           ),
@@ -301,8 +314,10 @@ class _HomePageState extends State<HomePage> {
       centerTitle: true,
       title: Text(
         "Hoqo Bajoe",
-        style: GoogleFonts.poppins(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+        style: blackTextStyle.copyWith(
+          fontSize: 16,
+          fontWeight: bold,
+        ),
       ),
       backgroundColor: Colors.transparent,
       elevation: 0,

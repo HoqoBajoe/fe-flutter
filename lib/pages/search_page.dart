@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/components/list_paket.dart';
 import 'package:hoqobajoe/model/paket.dart';
+import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
 
 class SearchPage extends StatelessWidget {
@@ -23,64 +24,6 @@ class SearchPage extends StatelessWidget {
       }
     }
 
-    Widget buildListRecs(String imagePhoto, paketName, List<String> list) =>
-        Row(
-          children: [
-            SizedBox(
-              height: 75,
-              width: 75,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imagePhoto,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    paketName,
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 18),
-                  ),
-                  const SizedBox(width: 16),
-                  Text(
-                    "${list[0]},${list[1]},...",
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black,
-                        fontSize: 14),
-                  ),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star_rounded,
-                        color: Colors.yellow,
-                      ),
-                      Text(
-                        "4.9",
-                        style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.normal,
-                            color: Colors.black,
-                            fontSize: 14),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        );
     Container listRecommended() {
       return Container(
           margin: const EdgeInsets.only(left: 15, top: 10),
@@ -97,10 +40,12 @@ class SearchPage extends StatelessWidget {
                         Navigator.pushNamed(context, "/detail_page",
                             arguments: paket[index]);
                       },
-                      child: buildListRecs(
-                          paket[index].photo_wisata[1],
-                          paket[index].nama_paket,
-                          paket[index].destinasi_wisata),
+                      child: listPaket(
+                        paket[index].photo_wisata[1],
+                        paket[index].nama_paket,
+                        paket[index].destinasi_wisata,
+                        paket[index].harga,
+                      ),
                     ),
                     separatorBuilder: (content, _) =>
                         const SizedBox(height: 12),
@@ -123,8 +68,10 @@ class SearchPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           "Search",
-          style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          style: blackTextStyle.copyWith(
+            fontSize: 16,
+            fontWeight: bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,

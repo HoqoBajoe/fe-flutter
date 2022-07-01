@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/model/review.dart';
-import 'package:hoqobajoe/pages/home_page.dart';
 import 'package:hoqobajoe/theme.dart';
+import 'package:intl/intl.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,6 +27,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   var token;
   var ratingStars;
 
+  final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
+
   Future<void> getStorage() async {
     var storage = const FlutterSecureStorage();
     var getToken = await storage.read(key: "TOKEN");
@@ -37,6 +39,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    ratingStars = 1;
     getStorage();
     super.initState();
   }
@@ -75,14 +78,29 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           'review': review,
         }),
       );
-
       if (response.statusCode == 201) {
-        var responseJson = jsonDecode(response.body);
-        print(responseJson);
-        Navigator.pushNamed(context, '/start');
-        return print('success add review');
+        modalMessage(
+            'Success',
+            successColor,
+            'Berhasil memberikan review, mohon bersabar review akan di cek oleh admin',
+            messageColor,
+            context);
+      } else if (token == null) {
+        modalMessage(
+          'Gagal',
+          gagalColor,
+          'Harap login terlebih dahulu.',
+          messageColor,
+          context,
+        );
       } else {
-        return print('error add review');
+        modalMessage(
+          'Gagal',
+          gagalColor,
+          'Gagal memberikan review, hubungi admin.',
+          messageColor,
+          context,
+        );
       }
     }
 
@@ -96,11 +114,30 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: GoogleFonts.poppins(
-                    fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: plainTextStyle.copyWith(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 12),
-            Text("Harga : IDR $price")
+            Row(children: [
+              Text(
+                "Harga ",
+                style: blackTextStyle,
+              ),
+              Text(
+                formatCurrency.format(price),
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                '/pax',
+                style: blackTextStyle.copyWith(fontSize: 12),
+              )
+            ])
           ],
         ),
       );
@@ -172,33 +209,41 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     }
 
     Container buttonPay() {
-      return Container(
-        margin: const EdgeInsets.only(top: 10, right: 35),
-        alignment: Alignment.centerRight,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            color: const Color(0XFF31A5BE),
-            height: 45,
-            width: 150,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, '/transaction', arguments: paket);
-              },
-              icon: const Icon(Icons.arrow_forward_rounded,
-                  color: Colors.white, size: 18),
-              label: Text("Beli",
-                  style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500)),
-              style: ElevatedButton.styleFrom(
-                primary: const Color(0XFF31A5BE),
+      if (token != null) {
+        return Container(
+          margin: const EdgeInsets.only(top: 5, right: 35),
+          alignment: Alignment.centerRight,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              color: const Color(0XFF31A5BE),
+              height: 45,
+              width: 150,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/transaction',
+                      arguments: paket);
+                },
+                icon: const Icon(Icons.arrow_forward_rounded,
+                    color: Colors.white, size: 18),
+                label: Text(
+                  "Beli",
+                  style: plainTextStyle.copyWith(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: medium,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: const Color(0XFF31A5BE),
+                ),
               ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        return Container();
+      }
     }
 
     Widget buildReview(String nama, String comment, String rating) {
@@ -346,7 +391,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         margin: EdgeInsets.symmetric(horizontal: defaultMargin),
         child: TabBar(
           labelColor: Colors.black,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+          labelStyle: plainTextStyle.copyWith(
+            fontWeight: medium,
+          ),
           unselectedLabelColor: Colors.grey,
           controller: _tabController,
           indicatorColor: Colors.black,
@@ -407,8 +454,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           centerTitle: true,
           title: Text(
             "Hoqo Bajoe",
-            style: GoogleFonts.poppins(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            style: blackTextStyle.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -446,7 +495,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           tabBar(_tabController),
           tabBarView(_tabController, paket.deskripsi, paket.destinasi_wisata),
           //button
-          buttonPay(),
+          buttonPay()
         ],
       ),
     );

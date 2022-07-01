@@ -195,7 +195,9 @@ class _HistoryPageState extends State<HistoryPage>
       height: 40,
       child: TabBar(
         labelColor: Colors.black,
-        labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+        labelStyle: plainTextStyle.copyWith(
+          fontWeight: bold,
+        ),
         controller: _tabController,
         indicatorColor: _tabController.index == 0
             ? Colors.black

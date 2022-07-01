@@ -12,8 +12,10 @@ class AboutUsPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           "Hoqo Bajoe",
-          style: GoogleFonts.poppins(
-              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+          style: blackTextStyle.copyWith(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
