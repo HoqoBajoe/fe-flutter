@@ -72,6 +72,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
 
     if (response.statusCode == 200) {
+      await storage.write(key: "NAMA", value: nama);
       modalMessageNamed(
         'Success',
         successColor,
