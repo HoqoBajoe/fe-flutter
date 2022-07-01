@@ -43,6 +43,7 @@ class _TransactionPageState extends State<TransactionPage> {
     getStorage();
     super.initState();
     paxValue = 1;
+    metodeValue = 'Virtual Account BNI';
   }
 
   @override
