@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/components/header_on_auth.dart';
+import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:http/http.dart' as http;
 import 'package:hoqobajoe/theme.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:email_validator/email_validator.dart';
+
 class SignUpPage extends StatelessWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
@@ -12,6 +15,7 @@ class SignUpPage extends StatelessWidget {
     var txtEditNama = TextEditingController();
     var txtEditEmail = TextEditingController();
     var txtEditPass = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     Future<void> registerUser(
       String nama,
@@ -31,128 +35,31 @@ class SignUpPage extends StatelessWidget {
       );
 
       if (response.statusCode == 201) {
-        Navigator.pushNamed(context, '/start');
-        return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Success',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xff3ccd71),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Register akun sukses",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xff3ccd71), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+        modalMessageNamed(
+          'Success',
+          successColor,
+          'Registrasi akun berhasil, silahkan login!',
+          messageColor,
+          context,
+          '/start',
+        );
+      } else if (response.statusCode == 422) {
+        modalMessage(
+          'Error',
+          gagalColor,
+          'Email yang sama sudah digunakan.',
+          messageColor,
+          context,
+        );
       } else {
-        return showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 200,
-            color: Colors.white,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Gagal',
-                    style: GoogleFonts.poppins(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xfff04f4e),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Register akun gagal",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: const Color(0xff12313E),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xfff04f4e), // Background color
-                    ),
-                    child: Text(
-                      'Close',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
+        modalMessage(
+          'Gagal',
+          gagalColor,
+          'Registrasi akun gagal..',
+          messageColor,
+          context,
+        );
       }
-    }
-
-    Widget header() {
-      return Container(
-        margin: const EdgeInsets.only(top: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Image(
-                image: AssetImage("assets/images/logo_hoqobajoe.png"),
-                width: 200,
-              ),
-            ),
-            Text(
-              'Daftar',
-              style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 32,
-                letterSpacing: 2.5,
-              ),
-            ),
-          ],
-        ),
-      );
     }
 
     Widget nameField() {
@@ -184,6 +91,12 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Nama tidak boleh kosong';
+                          }
+                          return null;
+                        },
                         controller: txtEditNama,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Nama',
@@ -227,6 +140,16 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email tidak boleh kosong';
+                          }
+                          if (EmailValidator.validate(value.toString()) ==
+                              false) {
+                            return 'Email tidak sesuai format';
+                          }
+                          return null;
+                        },
                         controller: txtEditEmail,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Alamat Email',
@@ -270,6 +193,12 @@ class SignUpPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password tidak boleh kosong';
+                          }
+                          return null;
+                        },
                         controller: txtEditPass,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
@@ -292,7 +221,13 @@ class SignUpPage extends StatelessWidget {
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
           onPressed: () {
-            registerUser(txtEditNama.text, txtEditEmail.text, txtEditPass.text);
+            if (_formKey.currentState!.validate()) {
+              registerUser(
+                txtEditNama.text,
+                txtEditEmail.text,
+                txtEditPass.text,
+              );
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: secondaryColor,
@@ -344,17 +279,20 @@ class SignUpPage extends StatelessWidget {
         margin: const EdgeInsets.symmetric(
           horizontal: 30,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            header(),
-            nameField(),
-            emailField(),
-            passwordField(),
-            signInButton(),
-            const Spacer(),
-            footer(),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerOnAuth("Daftar", "assets/images/logo_hoqobajoe.png"),
+              nameField(),
+              emailField(),
+              passwordField(),
+              signInButton(),
+              const Spacer(),
+              footer(),
+            ],
+          ),
         ),
       )),
     );

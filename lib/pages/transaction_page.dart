@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_number_picker/flutter_number_picker.dart';
+import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
@@ -66,99 +66,21 @@ class _TransactionPageState extends State<TransactionPage> {
         }),
       );
       if (response.statusCode == 201) {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              height: 200,
-              color: Colors.white,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'Success',
-                      style: GoogleFonts.poppins(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xff3ccd71),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Update profile sukses",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xff12313E),
-                      ),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: const Color(0xff3ccd71), // Background color
-                      ),
-                      child: Text(
-                        'Close',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      onPressed: () => Navigator.pushNamed(context, '/start'),
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
+        modalMessageNamed(
+          'Success',
+          successColor,
+          'Transaksi berhasil!',
+          messageColor,
+          context,
+          '/start',
         );
       } else {
-        showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) {
-            return Container(
-              height: 200,
-              color: Colors.white,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      'Gagal',
-                      style: GoogleFonts.poppins(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xfff04f4e),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Update profile gagal",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xff12313E),
-                      ),
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color(0xfff04f4e), // Background color
-                        ),
-                        child: Text(
-                          'Close',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onPressed: () => Navigator.pop(context))
-                  ],
-                ),
-              ),
-            );
-          },
+        modalMessage(
+          'Gagal',
+          gagalColor,
+          'Transaksi gagal, hubungi admin!',
+          messageColor,
+          context,
         );
       }
     }
@@ -168,8 +90,10 @@ class _TransactionPageState extends State<TransactionPage> {
         centerTitle: true,
         title: Text(
           "Transaction",
-          style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          style: blackTextStyle.copyWith(
+            fontSize: 16,
+            fontWeight: bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -354,7 +278,7 @@ class _TransactionPageState extends State<TransactionPage> {
     return Scaffold(
         appBar: buildAppBar(),
         body: Padding(
-          padding: const EdgeInsets.only(left: 30, right: 30),
+          padding: const EdgeInsets.only(left: 30, right: 30, top: 5),
           child: Column(
             children: [
               headerSummary(),

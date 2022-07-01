@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/components/list_paket.dart';
 import 'package:hoqobajoe/model/paket.dart';
+import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
 
 class SearchPage extends StatelessWidget {
@@ -68,8 +68,10 @@ class SearchPage extends StatelessWidget {
         centerTitle: true,
         title: Text(
           "Search",
-          style: GoogleFonts.poppins(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+          style: blackTextStyle.copyWith(
+            fontSize: 16,
+            fontWeight: bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,

@@ -35,18 +35,18 @@ Widget listPaket(
             children: [
               Text(
                 paketName,
-                style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 18),
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
               const SizedBox(width: 16),
               Text(
                 "${list[0]},${list[1]},...",
-                style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black,
-                    fontSize: 14),
+                style: blackTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
               ),
               Text(
                 formatCurrency.format(harga),

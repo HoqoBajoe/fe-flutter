@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hoqobajoe/theme.dart';
 
 Future<dynamic> modalMessage(String status, Color statusColor, String message,
     Color messageColor, BuildContext context) {
@@ -16,9 +17,9 @@ Future<dynamic> modalMessage(String status, Color statusColor, String message,
             children: <Widget>[
               Text(
                 status,
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
+                style: plainTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
+                  fontSize: 18,
                   color: statusColor,
                 ),
               ),
@@ -26,9 +27,9 @@ Future<dynamic> modalMessage(String status, Color statusColor, String message,
               Text(
                 message,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
+                style: plainTextStyle.copyWith(
+                  fontWeight: regular,
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
                   color: messageColor,
                 ),
               ),
@@ -38,7 +39,7 @@ Future<dynamic> modalMessage(String status, Color statusColor, String message,
                 ),
                 child: Text(
                   'Close',
-                  style: GoogleFonts.poppins(
+                  style: plainTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -68,18 +69,18 @@ Future<dynamic> modalMessageNamed(String status, Color statusColor,
             children: <Widget>[
               Text(
                 status,
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
+                style: plainTextStyle.copyWith(
                   fontWeight: FontWeight.bold,
+                  fontSize: 18,
                   color: statusColor,
                 ),
               ),
               const SizedBox(height: 10),
               Text(
                 message,
-                style: GoogleFonts.poppins(
+                style: plainTextStyle.copyWith(
+                  fontWeight: regular,
                   fontSize: 14,
-                  fontWeight: FontWeight.w400,
                   color: messageColor,
                 ),
               ),
@@ -89,7 +90,7 @@ Future<dynamic> modalMessageNamed(String status, Color statusColor,
                 ),
                 child: Text(
                   'Close',
-                  style: GoogleFonts.poppins(
+                  style: plainTextStyle.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:hoqobajoe/components/header_on_auth.dart';
 import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
@@ -19,6 +21,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     var txtEditEmail = TextEditingController();
     var txtEditPass = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
 
     Future<void> doLogin(String email, String password) async {
       final response = await http.post(
@@ -46,31 +49,6 @@ class _SignInPageState extends State<SignInPage> {
         modalMessage("Gagal", const Color(0xfff04f4e), "Email/password salah",
             const Color(0xff12313E), context);
       }
-    }
-
-    Widget header() {
-      return Container(
-        margin: const EdgeInsets.only(top: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Image(
-                image: AssetImage("assets/images/login_vector.png"),
-                width: 200,
-              ),
-            ),
-            Text(
-              'Masuk',
-              style: blackTextStyle.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 32,
-                letterSpacing: 2.5,
-              ),
-            ),
-          ],
-        ),
-      );
     }
 
     Widget emailField() {
@@ -102,6 +80,16 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email tidak boleh kosong';
+                          }
+                          if (EmailValidator.validate(value.toString()) ==
+                              false) {
+                            return 'Email tidak sesuai format';
+                          }
+                          return null;
+                        },
                         controller: txtEditEmail,
                         decoration: InputDecoration.collapsed(
                           hintText: 'Alamat Email',
@@ -145,6 +133,12 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     Expanded(
                       child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password tidak boleh kosong';
+                          }
+                          return null;
+                        },
                         controller: txtEditPass,
                         obscureText: true,
                         decoration: InputDecoration.collapsed(
@@ -167,8 +161,9 @@ class _SignInPageState extends State<SignInPage> {
         margin: const EdgeInsets.only(top: 30),
         child: TextButton(
           onPressed: () {
-            print('di klik');
-            doLogin(txtEditEmail.text, txtEditPass.text);
+            if (_formKey.currentState!.validate()) {
+              doLogin(txtEditEmail.text, txtEditPass.text);
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: secondaryColor,
@@ -221,16 +216,19 @@ class _SignInPageState extends State<SignInPage> {
         margin: const EdgeInsets.symmetric(
           horizontal: 30,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            header(),
-            emailField(),
-            passwordField(),
-            signInButton(),
-            const Spacer(),
-            footer(),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              headerOnAuth("Masuk", "assets/images/login_vector.png"),
+              emailField(),
+              passwordField(),
+              signInButton(),
+              const Spacer(),
+              footer(),
+            ],
+          ),
         ),
       )),
     );

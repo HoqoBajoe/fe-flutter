@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/theme.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class EditProfilePage extends StatefulWidget {
@@ -120,7 +119,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           child: Text(
             'Log Out',
-            style: GoogleFonts.poppins(
+            style: plainTextStyle.copyWith(
               fontSize: 12,
               fontWeight: bold,
             ),
@@ -137,8 +136,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
         centerTitle: true,
         title: Text(
           'My Profile',
-          style: GoogleFonts.poppins(
-              fontSize: 20, color: Colors.black, fontWeight: bold),
+          style: blackTextStyle.copyWith(
+            fontSize: 20,
+            fontWeight: bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -263,7 +264,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           child: Text(
             'Edit Profile',
-            style: GoogleFonts.poppins(
+            style: plainTextStyle.copyWith(
               fontSize: 15,
               fontWeight: bold,
             ),
@@ -305,7 +306,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   Expanded(
                     child: Text(
                       role,
-                      style: GoogleFonts.poppins(
+                      style: blackTextStyle.copyWith(
                         fontSize: 12,
                         color: Colors.black.withOpacity(0.5),
                         fontWeight: bold,

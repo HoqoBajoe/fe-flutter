@@ -105,8 +105,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Recommended",
-            style:
-                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            style: blackTextStyle.copyWith(
+              fontSize: 22,
+              fontWeight: bold,
+            ),
           ),
         ],
       ),
@@ -155,8 +157,10 @@ class _HomePageState extends State<HomePage> {
         children: [
           Text(
             "Popular Category",
-            style:
-                GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            style: blackTextStyle.copyWith(
+              fontSize: 22,
+              fontWeight: bold,
+            ),
           ),
         ],
       ),
@@ -197,7 +201,10 @@ class _HomePageState extends State<HomePage> {
           Text(
             "World of Paradise,",
             style: GoogleFonts.poppins(
-                fontSize: 38, fontWeight: FontWeight.bold, height: 0.5),
+              fontSize: 38,
+              fontWeight: FontWeight.bold,
+              height: 0.5,
+            ),
           ),
           Text(
             "Indonesia",
@@ -234,10 +241,11 @@ class _HomePageState extends State<HomePage> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     placeName,
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                        fontSize: 12),
+                    style: plainTextStyle.copyWith(
+                      fontWeight: regular,
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
@@ -276,18 +284,18 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Text(
                   paketName,
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 18),
+                  style: blackTextStyle.copyWith(
+                    fontWeight: bold,
+                    fontSize: 18,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Text(
                   "${list[0]},${list[1]},...",
-                  style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                      fontSize: 14),
+                  style: blackTextStyle.copyWith(
+                    fontWeight: regular,
+                    fontSize: 14,
+                  ),
                 ),
                 Text(
                   formatCurrency.format(harga),
@@ -306,8 +314,10 @@ class _HomePageState extends State<HomePage> {
       centerTitle: true,
       title: Text(
         "Hoqo Bajoe",
-        style: GoogleFonts.poppins(
-            fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+        style: blackTextStyle.copyWith(
+          fontSize: 16,
+          fontWeight: bold,
+        ),
       ),
       backgroundColor: Colors.transparent,
       elevation: 0,

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/model/review.dart';
@@ -115,9 +114,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: GoogleFonts.poppins(
-                    fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: plainTextStyle.copyWith(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 12),
             Row(children: [
               Text(
@@ -223,11 +226,14 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                 },
                 icon: const Icon(Icons.arrow_forward_rounded,
                     color: Colors.white, size: 18),
-                label: Text("Beli",
-                    style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500)),
+                label: Text(
+                  "Beli",
+                  style: plainTextStyle.copyWith(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: medium,
+                  ),
+                ),
                 style: ElevatedButton.styleFrom(
                   primary: const Color(0XFF31A5BE),
                 ),
@@ -385,7 +391,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         margin: EdgeInsets.symmetric(horizontal: defaultMargin),
         child: TabBar(
           labelColor: Colors.black,
-          labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+          labelStyle: plainTextStyle.copyWith(
+            fontWeight: medium,
+          ),
           unselectedLabelColor: Colors.grey,
           controller: _tabController,
           indicatorColor: Colors.black,
@@ -446,8 +454,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           centerTitle: true,
           title: Text(
             "Hoqo Bajoe",
-            style: GoogleFonts.poppins(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            style: blackTextStyle.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hoqobajoe/theme.dart';
 
 class Location extends StatefulWidget {
   const Location({Key? key}) : super(key: key);
@@ -20,8 +21,10 @@ class _LocationState extends State<Location> {
           centerTitle: true,
           title: Text(
             "Hoqo Bajoe",
-            style: GoogleFonts.poppins(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            style: blackTextStyle.copyWith(
+              fontSize: 16,
+              fontWeight: bold,
+            ),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
