@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hoqobajoe/pages/Location.dart';
+import 'package:hoqobajoe/pages/add_review.dart';
 // import 'package:hoqobajoe/components/bottom_navbar.dart';
 import 'package:hoqobajoe/pages/detail_page.dart';
 import 'package:hoqobajoe/pages/home_page.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/edit_profile_page': (context) => const EditProfilePage(),
         '/location': (context) => const Location(),
         '/transaction': (context) => TransactionPage(),
+        '/add_review': (context) => AddReview()
       },
     );
   }

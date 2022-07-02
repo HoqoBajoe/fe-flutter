@@ -1,16 +1,16 @@
 class User {
-  int id;
-  String nama;
-  String email;
-  String role;
-  String token;
+  int? id;
+  String? nama;
+  String? email;
+  String? role;
+  String? token;
 
   User({
-    required this.id,
-    required this.nama,
-    required this.email,
-    required this.role,
-    required this.token,
+    this.id,
+    this.nama,
+    this.email,
+    this.role,
+    this.token,
   });
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -20,10 +20,7 @@ class User {
         token = json['token'];
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'nama': nama,
         'email': email,
-        'role': role,
-        'token': token,
       };
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hoqobajoe/components/modal_message.dart';
 import 'package:hoqobajoe/model/paket.dart';
 import 'package:hoqobajoe/model/review.dart';
 import 'package:hoqobajoe/theme.dart';
@@ -20,12 +19,12 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
+  late TabController _tabController;
   int activeIndex = 0;
   late Future<List<ReviewUser>> future;
   TextEditingController controllerReview = TextEditingController();
-  // TextEditingController controllerRating = TextEditingController();
-  var token;
-  var ratingStars;
+  String? token;
+  int? ratingStars;
 
   final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
 
@@ -39,9 +38,16 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    _tabController = TabController(length: 2, vsync: this);
     ratingStars = 1;
     getStorage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,49 +70,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       }
     }
 
-    // Add Review
-    Future<void> doAddReview(int stars, String review) async {
-      final response = await http.post(
-        Uri.parse('https://hoqobajoe.herokuapp.com/api/review/paket/' +
-            paket.id.toString()),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': 'Bearer $token '
-        },
-        body: jsonEncode({
-          'stars': stars,
-          'review': review,
-        }),
-      );
-      if (response.statusCode == 201) {
-        modalMessage(
-            'Success',
-            successColor,
-            'Berhasil memberikan review, mohon bersabar review akan di cek oleh admin',
-            messageColor,
-            context);
-      } else if (token == null) {
-        modalMessage(
-          'Gagal',
-          gagalColor,
-          'Harap login terlebih dahulu.',
-          messageColor,
-          context,
-        );
-      } else {
-        modalMessage(
-          'Gagal',
-          gagalColor,
-          'Gagal memberikan review, hubungi admin.',
-          messageColor,
-          context,
-        );
-      }
-    }
-
     List<String> urlImages = paket.photo_wisata;
-
-    TabController _tabController = TabController(length: 3, vsync: this);
 
     Padding titleAndPrice(String title, int price) {
       return Padding(
@@ -143,67 +107,35 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       );
     }
 
-    SingleChildScrollView addReview() {
-      return SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
-        child: Column(
-          children: <Widget>[
-            RatingBar.builder(
-              initialRating: 1,
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: false,
-              itemCount: 5,
-              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              onRatingUpdate: (rating) {
-                ratingStars = rating;
+    Container buttonAddReview() {
+      return Container(
+        margin: const EdgeInsets.only(left: 35),
+        alignment: Alignment.centerRight,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            color: const Color(0XFF31A5BE),
+            height: 45,
+            width: 150,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, '/add_review', arguments: paket);
               },
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              child: TextField(
-                decoration: InputDecoration(
-                    icon: const Icon(
-                      Icons.chat,
-                      color: Colors.black,
-                    ),
-                    hintText: "Masukkan Review...",
-                    labelText: "Review",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6))),
-                onChanged: (value) {
-                  setState(() {});
-                },
-                controller: controllerReview,
+              icon:
+                  const Icon(Icons.rate_review, color: Colors.white, size: 18),
+              label: Text(
+                "Tambah Review",
+                style: plainTextStyle.copyWith(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: medium,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: secondaryColor,
               ),
             ),
-            Container(
-                width: MediaQuery.of(context).size.width,
-                margin: const EdgeInsets.only(bottom: 5),
-                child: ElevatedButton(
-                  onPressed: () {
-                    doAddReview(ratingStars.toInt(), controllerReview.text);
-                  },
-                  child: const Text(
-                    "Submit Review",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: primaryColor,
-                    padding: const EdgeInsets.all(15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                )),
-          ],
+          ),
         ),
       );
     }
@@ -211,7 +143,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     Container buttonPay() {
       if (token != null) {
         return Container(
-          margin: const EdgeInsets.only(top: 5, right: 35),
+          margin: const EdgeInsets.only(right: 35),
           alignment: Alignment.centerRight,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -230,7 +162,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   "Beli",
                   style: plainTextStyle.copyWith(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 14,
                     fontWeight: medium,
                   ),
                 ),
@@ -246,37 +178,46 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
       }
     }
 
-    Widget buildReview(String nama, String comment, String rating) {
+    Widget buildReview(
+        String nama, String comment, String rating, DateTime waktu) {
+      double newRating = double.parse(rating);
       return Container(
         margin: const EdgeInsets.only(top: 5, bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              nama,
+              style: blackTextStyle.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  nama,
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
+                RatingBar.builder(
+                  ignoreGestures: true,
+                  itemSize: 20,
+                  initialRating: newRating,
+                  direction: Axis.horizontal,
+                  allowHalfRating: false,
+                  itemCount: 5,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 0.1),
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                const Icon(
-                  Icons.star,
-                  color: Colors.yellow,
-                ),
-                const SizedBox(
-                  width: 10,
+                  onRatingUpdate: (rating) {},
                 ),
                 Text(
-                  rating,
-                  style: blackTextStyle.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  DateFormat.yMMMMd().format(waktu),
+                  style: blackTextStyle.copyWith(fontSize: 12),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 5,
             ),
             Text(
               comment,
@@ -306,11 +247,12 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                     child: ListView.separated(
                       itemCount: reviewData.length,
                       itemBuilder: (BuildContext context, int index) => InkWell(
-                          onTap: () {},
-                          child: buildReview(
-                              reviewData[index].nama,
-                              reviewData[index].review,
-                              reviewData[index].stars.toString())),
+                        child: buildReview(
+                            reviewData[index].nama,
+                            reviewData[index].review,
+                            reviewData[index].stars.toString(),
+                            reviewData[index].createdAt),
+                      ),
                       separatorBuilder: (content, _) => const Divider(
                         height: 3,
                         color: Colors.black,
@@ -330,6 +272,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               }));
     }
 
+    // Overview
     Container tabBarView(
         TabController _tabController, String paket, List<String> destinasi) {
       return Container(
@@ -379,7 +322,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
               ),
             ),
             listReview(),
-            addReview()
           ],
         ),
       );
@@ -400,7 +342,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           tabs: const [
             Tab(text: "Overview"),
             Tab(text: "Review"),
-            Tab(text: "Add Review")
           ],
         ),
       );
@@ -495,7 +436,13 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
           tabBar(_tabController),
           tabBarView(_tabController, paket.deskripsi, paket.destinasi_wisata),
           //button
-          buttonPay()
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buttonAddReview(),
+              buttonPay(),
+            ],
+          )
         ],
       ),
     );
