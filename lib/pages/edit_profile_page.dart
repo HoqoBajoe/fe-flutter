@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hoqobajoe/components/modal_message.dart';
+import 'package:hoqobajoe/model/user.dart';
 import 'package:hoqobajoe/theme.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,32 +13,17 @@ class EditProfilePage extends StatefulWidget {
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class editUser {
-  final String nama;
-  final String email;
-  final String role;
-
-  editUser({
-    required this.nama,
-    required this.email,
-    required this.role,
-  });
-
-  factory editUser.fromJson(Map<String, dynamic> json) {
-    return editUser(
-      nama: json['nama'],
-      email: json['email'],
-      role: json['role'],
-    );
-  }
-}
-
 class _EditProfilePageState extends State<EditProfilePage> {
   final storage = const FlutterSecureStorage();
 
-  // Get User Data
-  Future<editUser> fetchUser() async {
-    var nullResponse = editUser(nama: 'null', email: 'null', role: 'null');
+  // Get Data User
+  Future<User> fetchUser() async {
+    var nullResponse = User(
+      id: null,
+      nama: null,
+      email: null,
+      role: null,
+    );
     var token = await storage.read(key: "TOKEN");
     var response = await http.get(
         Uri.parse('https://hoqobajoe.herokuapp.com/api/account'),
@@ -48,7 +34,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     if (response.statusCode == 200) {
       var responseJson = json.decode(response.body)['data'];
-      return editUser.fromJson(responseJson);
+      return User.fromJson(responseJson);
     } else {
       return nullResponse;
     }
@@ -333,13 +319,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
             future: fetchUser(),
             builder: (context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
-                editUser _profile = snapshot.data as editUser;
+                User _profile = snapshot.data as User;
                 return Column(
                   children: [
                     profilePicture(),
-                    nameField(_profile.nama),
-                    emailField(_profile.email),
-                    showRole(_profile.role),
+                    nameField(_profile.nama.toString()),
+                    emailField(_profile.email.toString()),
+                    showRole(_profile.role.toString()),
                     editButton(),
                   ],
                 );
